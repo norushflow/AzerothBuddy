@@ -8,6 +8,16 @@
 - `./tools/check.sh` prüft TOC-Dateipfade, Lua-Syntax und die vorhandenen Funktionstests.
 - `./tools/package.sh` erstellt nach grüner Prüfung ein lokales Installations-ZIP unter `dist/`. Entpacke den darin enthaltenen Addon-Ordner zur Prüfung in den passenden WoW-Client und führe `/reload` aus.
 
+### Release für WowUp
+
+Für einen beauftragten Release die Version in der TOC, im README-Titel und in
+vorhandenen Versionsmeldungen abgleichen. Den geprüften Stand auf `main` hochladen
+und einen passenden Git-Tag setzen, etwa `git tag v1.2.3` und
+`git push origin v1.2.3`. Die GitHub Action **WowUp Release** führt die Tests
+aus, baut das Installations-ZIP und veröffentlicht es im privaten Repository.
+In WowUp den passenden Spielclient auswählen und die Repository-URL importieren.
+Der WowUp-Zugriffstoken benötigt Leserechte für dieses Repository.
+
 Eigenständiges WoW-Retail-/Midnight-Addon mit Zentrale und Modulen für Charaktere,
 Valeera-/Tiefenberatung, Aktionsleisten-Vorlagen sowie
 weitere vorhandene Funktionen (z. B. Omnium, Transmog und Meter).
