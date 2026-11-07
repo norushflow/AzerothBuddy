@@ -15,6 +15,7 @@ vorhandenen Versionsmeldungen abgleichen. Den geprüften Stand auf `main` hochla
 und einen passenden Git-Tag setzen, etwa `git tag v1.2.3` und
 `git push origin v1.2.3`. Die GitHub Action **WowUp Release** führt die Tests
 aus, baut das Installations-ZIP und veröffentlicht es im privaten Repository.
+KI-Anweisungen, Entwicklerdokumentation, Tests und Workflow-Dateien bleiben im Repository.
 In WowUp den passenden Spielclient auswählen und die Repository-URL importieren.
 Der WowUp-Zugriffstoken benötigt Leserechte für dieses Repository.
 
@@ -95,8 +96,4 @@ wird ausschließlich von `AzerothBuddyUI` platziert, nicht von diesem Addon.
 
 Frühere Versionen einschließlich der fehlerhaften Tracking-Implementierung
 sind ausschließlich historische Berichte, keine aktuellen Anforderungen:
-[README-BUDDY-HISTORIE.md](../../docs/README-BUDDY-HISTORIE.md).
-
-**Regel für neue Änderungen:** Erst `AGENTS.md` lesen. Für Codeänderungen
-neue Patch-Version (nächste `1.0.1`) als vollständige Versionskopie erstellen;
-1.0.0 unverändert lassen.
+`Archiv/docs/README-BUDDY-HISTORIE.md` im lokalen Sammelordner.
