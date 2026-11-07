@@ -1,6 +1,6 @@
 # AzerothBuddy
 
-AzerothBuddy ist ein eigenständiges WoW-Addon für WoW Forever. Zentrale, Charaktere, Valeera/Tiefen, Aktionsleisten-Vorlagen, Omnium, Transmog und Meter.
+AzerothBuddy ist ein eigenständiges WoW-Addon für Retail / Midnight. Zentrale, Charaktere, Valeera/Tiefen, Aktionsleisten-Vorlagen, Omnium, Transmog und Meter.
 
 Beginne bei `Core.lua`, `Initialize.lua` und dem betroffenen Verzeichnis in `Modules/`. Der Buddy-Kompass bleibt eigenständig. Das native Blizzard-Tracking gehört zu AzerothBuddyUI.
 

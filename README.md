@@ -1,4 +1,4 @@
-# AzerothBuddy 1.0.3 – WoW Forever
+# AzerothBuddy 1.0.3
 
 ## Entwicklung unter Linux
 
@@ -8,7 +8,7 @@
 - `./tools/check.sh` prüft TOC-Dateipfade, Lua-Syntax und die vorhandenen Funktionstests.
 - `./tools/package.sh` erstellt nach grüner Prüfung ein lokales Installations-ZIP unter `dist/`. Entpacke den darin enthaltenen Addon-Ordner zur Prüfung in den passenden WoW-Client und führe `/reload` aus.
 
-Eigenständiges Addon für WoW Forever mit Zentrale und Modulen für Charaktere,
+Eigenständiges WoW-Retail-/Midnight-Addon mit Zentrale und Modulen für Charaktere,
 Valeera-/Tiefenberatung, Aktionsleisten-Vorlagen sowie
 weitere vorhandene Funktionen (z. B. Omnium, Transmog und Meter).
 **Eigenes Minimap-Symbol:** goldener Buddy-Kompass. **Blizzard-Aufspürensymbol:**
@@ -16,7 +16,7 @@ wird ausschließlich von `AzerothBuddyUI` platziert, nicht von diesem Addon.
 
 ## Installation und Bedienung
 
-- Ordner `AzerothBuddy` nach `World of Warcraft/_forever_/Interface/AddOns/` kopieren;
+- Ordner `AzerothBuddy` nach `World of Warcraft/_retail_/Interface/AddOns/` kopieren;
   `.toc` muss direkt in `AddOns/AzerothBuddy/` liegen. Danach Addon aktivieren und `/reload`.
 - `/ab` oder `/azerothbuddy`: Zentrale öffnen/schließen.
 - Buddy-Kompass: Linksklick Zentrale, Rechtsklick Charakterübersicht;
