@@ -1,0 +1,25 @@
+## Interface: 120105
+## Title: Azeroth Buddy
+## Notes: Charaktere, Valeera-Berater und Omniumfoliant in einem Addon.
+## Author: Basti
+## Version: 1.0.3
+## IconTexture: Interface\AddOns\AzerothBuddy\Media\BuddyIcon
+## SavedVariables: AzerothBuddyDB
+## SavedVariablesPerCharacter: AzerothBuddyCharDB
+Core.lua
+Style.lua
+Layout.lua
+Modules/Characters.lua
+Modules/Tiefen/Rules.lua
+Modules/Tiefen/Game.lua
+Modules/Tiefen/Apply.lua
+Modules/Tiefen/UI.lua
+Modules/Tiefen/Main.lua
+Modules/Omnium/Presets.lua
+Modules/Omnium/Main.lua
+Modules/Omnium/UI.lua
+Modules/Transmog.lua
+Modules/Meters.lua
+Modules/Bars/Game.lua
+Modules/Bars/Main.lua
+Initialize.lua
