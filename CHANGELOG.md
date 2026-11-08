@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.4
+
+- Autorenangabe in der Addonübersicht auf **norushflow** geändert.
+
 ## 1.0.3
 
 - Sichtbare Giftslot-Anzeige wird nach geänderter gespeicherter Auswahl aktualisiert.
