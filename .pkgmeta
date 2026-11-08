@@ -1,0 +1,12 @@
+package-as: AzerothBuddy
+ignore:
+  - AGENTS.md
+  - CHANGELOG.md
+  - DEVELOPMENT.md
+  - OMNIUM_PROFILES.md
+  - README.md
+  - SECURITY.md
+  - branding
+  - docs
+  - tests
+  - tools

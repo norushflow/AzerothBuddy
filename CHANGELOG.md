@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.6
+
+- CurseForge-Projekt-ID und Paketkonfiguration ergänzt.
+
 ## 1.0.5
 
 - Anzeigenamen in der Addonübersicht und den Fenstern auf **AzerothBuddy** vereinheitlicht.
