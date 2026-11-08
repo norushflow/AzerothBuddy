@@ -58,7 +58,7 @@ function TB.CreateUI()
     panel:SetMovable(true); panel:EnableMouse(true)
     Buddy.Style.Window(panel)
     local accent=panel:CreateTexture(nil,"ARTWORK"); accent:SetSize(3,34); accent:SetPoint("TOPLEFT",0,-14); accent:SetColorTexture(.95,.73,.3,.9)
-    title=Label(panel,GOLD.."Azeroth Buddy · Valeera|r",16,-16,350,24,"GameFontNormalLarge")
+    title=Label(panel,GOLD.."AzerothBuddy · Valeera|r",16,-16,350,24,"GameFontNormalLarge")
     context=Label(panel,"",16,-44,WIDTH-32,32,"GameFontHighlightSmall")
     Button(panel,"×",WIDTH-36,-11,25,function() TB.visibility=false; panel:Hide() end)
     local drag=CreateFrame("Frame",nil,panel); drag:SetPoint("TOPLEFT",0,0); drag:SetSize(WIDTH-42,42); drag:EnableMouse(true)
@@ -120,7 +120,7 @@ end
 function TB.Render()
     if not panel or not TB.player then return end
     local player,snapshot,recommendation=TB.player,TB.snapshot or {},TB.recommendation
-    title:SetText(GOLD .. "Azeroth Buddy · Valeera|r")
+    title:SetText(GOLD .. "AzerothBuddy · Valeera|r")
     local className, playerName = plain(player.className), plain(player.name) or "Unbekannt"
     local level = integer(snapshot.level)
     context:SetText(WHITE .. (className and className.." · " or "") .. playerName .. "|r\n" .. GREY

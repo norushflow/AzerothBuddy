@@ -444,7 +444,7 @@ ui.title = MakeFS(ui)
 ui.title:SetPoint("TOPLEFT", 70, -19)
 ui.title:SetFont(FONT_PATH, 18, "")
 ui.title:SetTextColor(1,0.82,0.38)
-ui.title:SetText("Azeroth Buddy · Charaktere")
+ui.title:SetText("AzerothBuddy · Charaktere")
 
 -- Account Playtime (top-right)
 ui.accountPlaytime = MakeFS(ui)

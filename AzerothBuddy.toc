@@ -1,8 +1,8 @@
 ## Interface: 120105
-## Title: Azeroth Buddy
+## Title: AzerothBuddy
 ## Notes: Charaktere, Valeera-Berater und Omniumfoliant in einem Addon.
 ## Author: norushflow
-## Version: 1.0.4
+## Version: 1.0.5
 ## IconTexture: Interface\AddOns\AzerothBuddy\Media\BuddyIcon
 ## SavedVariables: AzerothBuddyDB
 ## SavedVariablesPerCharacter: AzerothBuddyCharDB

@@ -19,7 +19,7 @@ end
 function Buddy.HideTooltip()
     Buddy.Foreign(GameTooltip, function(tooltip) tooltip:Hide() end)
 end
-function Buddy.Message(text) print("|cffffd100Azeroth Buddy:|r " .. text) end
+function Buddy.Message(text) print("|cffffd100AzerothBuddy:|r " .. text) end
 function Buddy.OpenModule(module)
     if not Buddy.loaded[module.key] then Buddy.Message("Modul aktivieren und die Oberfläche neu laden."); return end
     if module.key == "bars" then
@@ -51,7 +51,7 @@ function Buddy.Toggle()
         icon:SetTexture("Interface\\AddOns\\AzerothBuddy\\Media\\BuddyIcon")
         icon:SetSize(42,42); icon:SetPoint("TOPLEFT",16,-15)
         local title = panel:CreateFontString(nil,"OVERLAY","GameFontNormalLarge")
-        title:SetPoint("TOPLEFT",68,-21); title:SetText("Azeroth Buddy")
+        title:SetPoint("TOPLEFT",68,-21); title:SetText("AzerothBuddy")
         local sub = panel:CreateFontString(nil,"OVERLAY","GameFontHighlightSmall")
         sub:SetPoint("TOPLEFT",68,-44); sub:SetText("Dein Begleiter durch Azeroth")
         local close = CreateFrame("Button",nil,panel,"UIPanelCloseButton")
@@ -135,7 +135,7 @@ function Buddy.CreateMinimap()
     button:SetScript("OnEnter",function(self)
         Buddy.Foreign(GameTooltip, function()
         GameTooltip:SetOwner(self,"ANCHOR_LEFT")
-        GameTooltip:AddLine("Azeroth Buddy",1,.82,.38)
+        GameTooltip:AddLine("AzerothBuddy",1,.82,.38)
         GameTooltip:AddLine("Linksklick: Zentrale",1,1,1)
         GameTooltip:AddLine("Rechtsklick: Charaktere",1,1,1)
         GameTooltip:AddLine("Ziehen: Position ändern",.7,.7,.7)

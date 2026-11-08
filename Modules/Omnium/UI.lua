@@ -89,7 +89,7 @@ function O.Toggle()
    B.db.tiefen.position={point,relative,x,y}
    if B.Tiefen and B.Tiefen.db then B.Tiefen.db.position=B.db.tiefen.position end
   end)
-  label(p,"|cffffd100Azeroth Buddy · Omniumfoliant|r",20,-20,440)
+  label(p,"|cffffd100AzerothBuddy · Omniumfoliant|r",20,-20,440)
   O.heading=label(p,"",20,-52,450)
   overview(p)
   O.roleButtons={}
