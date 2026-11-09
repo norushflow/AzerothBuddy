@@ -1,5 +1,4 @@
-# v1.0.7
+# v1.0.8
 
-- Added German and English translations. English is used for other client languages.
-- The main menu closes when you open a module. It stays open when you select Action Bars.
-- Added the English aliases `relaxed`, `safe`, and `fast` for Valeera commands.
+- Show all 13 classes in the character window’s Class Statistics tab without scrolling.
+- Reduce repeated character, Omnium and layout work.

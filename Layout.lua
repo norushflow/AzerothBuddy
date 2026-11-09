@@ -29,21 +29,18 @@ function Buddy.MinimapAnchor()
     local rootScale = read(UIParent,"GetEffectiveScale")
     local width = read(UIParent,"GetWidth")
     if not bottom or not mapScale or not rootScale or rootScale<=0 or not width then return end
-    return width-RIGHT, bottom*mapScale/rootScale-DOWN
+    return width-RIGHT, bottom*mapScale/rootScale-DOWN, rootScale
 end
 function Buddy.PlaceAutomatic()
     if not Buddy.db or (InCombatLockdown and InCombatLockdown()) then return end
-    if not Buddy.Tiefen.panel then return end
-    local right,top=Buddy.MinimapAnchor()
-    if not right then return end
-    local rootScale=UIParent:GetEffectiveScale()
     local delve=Buddy.Tiefen.panel
-    if delve and Buddy.Tiefen.db and not Buddy.Tiefen.db.position and not Buddy.Tiefen.db.unlocked then
-        local x,y=right,top
-        local factor=delve:GetEffectiveScale()/rootScale
-        delve:ClearAllPoints()
-        delve:SetPoint("TOPRIGHT",UIParent,"BOTTOMLEFT",x/factor,y/factor)
-    end
+    local settings=Buddy.Tiefen.db
+    if not delve or not settings or settings.position or settings.unlocked then return end
+    local right,top,rootScale=Buddy.MinimapAnchor()
+    if not right then return end
+    local factor=delve:GetEffectiveScale()/rootScale
+    delve:ClearAllPoints()
+    delve:SetPoint("TOPRIGHT",UIParent,"BOTTOMLEFT",right/factor,top/factor)
 end
 function Buddy.StartLayout()
     -- Apply the requested automatic arrangement once for existing installations.

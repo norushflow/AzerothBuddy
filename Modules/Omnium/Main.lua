@@ -98,10 +98,14 @@ function O.Read()
          if row.node then row.ambiguous=true end
          row.node=nodeID;row.entry=entryID;row.choice=#n.entryIDs>1
          local active=public(n.activeEntry) and n.activeEntry
+         local activeID=type(active)=="table" and number(active.entryID) and active.entryID or nil
          row.rank=number(n.activeRank) and n.activeRank or 0
-         if type(active)=="table" and number(active.entryID) and row.rank>0 then
-          local ae=call(C_Traits,"GetEntryInfo",s.config,active.entryID)
-          local ad=type(ae)=="table" and number(ae.definitionID) and call(C_Traits,"GetDefinitionInfo",ae.definitionID)
+         if activeID and row.rank>0 then
+          local ad=d
+          if activeID~=entryID then
+           local ae=call(C_Traits,"GetEntryInfo",s.config,activeID)
+           ad=type(ae)=="table" and number(ae.definitionID) and call(C_Traits,"GetDefinitionInfo",ae.definitionID)
+          end
           if type(ad)=="table" then
            local info=number(ad.spellID) and call(C_Spell,"GetSpellInfo",ad.spellID)
            row.activeName=text(ad.overrideName) or (type(info)=="table" and text(info.name))
@@ -109,7 +113,7 @@ function O.Read()
            row.activeSpell=number(ad.spellID) and ad.spellID or nil
           end
          end
-         row.match=type(active)=="table" and number(active.entryID) and active.entryID==entryID and row.rank>0
+         row.match=activeID==entryID and row.rank>0
          row.available=public(n.isAvailable) and n.isAvailable==true and public(n.isVisible) and n.isVisible==true and public(e.isAvailable) and e.isAvailable==true
          row.status=row.match and L["Passt"] or row.available and L["Änderung vorgesehen"] or L["Noch gesperrt"]
         end

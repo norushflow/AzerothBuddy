@@ -1,26 +1,10 @@
 # AzerothBuddy
 
-AzerothBuddy ist ein eigenständiges WoW-Addon für Retail / Midnight. Zentrale, Charaktere, Valeera/Tiefen, Aktionsleisten-Vorlagen, Omnium, Transmog und Meter.
+Retail / Midnight. Zentrale und Funktionsmodule in `Modules/`. Einstieg in `Core.lua` und `Initialize.lua`. Der Buddy-Kompass ist eigenständig. Blizzard-Tracking gehört zu AzerothBuddyUI.
 
-Beginne bei `Core.lua`, `Initialize.lua` und dem betroffenen Verzeichnis in `Modules/`. Der Buddy-Kompass bleibt eigenständig. Das native Blizzard-Tracking gehört zu AzerothBuddyUI.
-
-## Ablauf für Codex und OpenCode
-
-1. Öffne dieses Git-Repository als Projekt. Arbeite pro Aufgabe mit einem Assistenten. Prüfe `git status --short`, die aktuelle Version und Ladereihenfolge in `AzerothBuddy.toc` sowie die relevanten Stellen in der README.
-2. Führe `./tools/check.sh` vor und nach Änderungen aus. Bearbeite den aktuellen Git-Arbeitsordner in kleinen Diffs. Bestehende lokale Änderungen erhalten. Für einen separaten Arbeitsstand einen Git-Branch verwenden.
-3. Verwende die vorhandenen LuaJIT-Tests in `tests/`. Prüfe bei Änderungen an der WoW-API den Zielclient und belastbare Quellen. Für UI, Kampf und Taint ist ein Test im passenden WoW-Client nötig.
-4. Prüfe `git diff --check` und den Inhalt des Diffs. Berichte kurz auf Deutsch unter **Geändert**, **Geprüft** und **Offen**. Wenn das Werkzeug gewechselt wird, im neuen Chat Ziel, betroffene Dateien, Prüfstatus und nächsten Schritt nennen.
-
-## WoW und Releases
-
-- Bestehende SavedVariables, Slash-Befehle und die Unabhängigkeit von den anderen Addons erhalten. Bei Secret Values vorhandene Guards und Typprüfungen nutzen. Geschützte Frames im Kampf unangetastet lassen, verbotene Frames abfangen und vorhandene Cleanup-Guards erhalten.
-- Bestehende Ereignisse nutzen. Keine neuen dauerhaften Polling-Schleifen, automatischen CVar-Änderungen beim Login oder Laufzeitabhängigkeiten ohne Auftrag einführen.
-- Bei Verhaltensänderungen die README knapp ergänzen. Die Version erst für einen beauftragten Release anpassen. TOC, vorhandene interne Versionsmeldungen und README-Kopf abgleichen. Historische Einträge erhalten.
-- `./tools/package.sh` erzeugt nach grüner Prüfung ein lokales Installations-ZIP unter `dist/`. Für beauftragte Releases löst ein zur TOC passender Versions-Tag die automatische Veröffentlichung aus.
-- Das WowUp-ZIP enthält nur Addon-Dateien, Medien und Lizenz- oder Herkunftshinweise. `AGENTS.md`, KI-Übergaben, Entwicklerdokumentation, Tests, GitHub-Workflows, Backups, SavedVariables und Zugangsdaten gehören nicht hinein.
-
-## Veröffentlichungsziel
-
-- Das öffentliche Repository `norushflow/AzerothBuddy` ist das freigegebene Upload- und Releaseziel.
-- Ein ausdrücklicher Releaseauftrag erlaubt Commit, Push und den zur TOC passenden Versions-Tag. Ohne Release- oder Pushauftrag nur lokal vorbereiten.
-- Nur dieses Addon veröffentlichen; Sammelordner, lokale Archive und SavedVariables bleiben lokal.
+- `git status --short` und TOC zuerst prüfen. Nur relevante Dateien und Tests lesen. Lokale Änderungen erhalten und Diffs prüfen.
+- `./tools/check.sh --quick` für gezielte Iteration, `./tools/check.sh --full` für den Abschluss. Bei Fehlern oder Bedarf `--debug` verwenden.
+- SavedVariables, Migrationen, Slash-Befehle und Addon-Unabhängigkeit erhalten. Secret Values vor Lua-Operationen prüfen und bestehende Guards für Kampf, geschützte und verbotene Frames beibehalten.
+- Keine neuen dauerhaften Ticker, automatischen CVar-Änderungen oder Abhängigkeiten ohne Auftrag. UI, Kampf und Taint im Zielclient prüfen.
+- Release-Ablauf in `DEVELOPMENT.md`. Version, Push, Tag und Veröffentlichung nur nach ausdrücklichem Auftrag. Veröffentlichungsziel `norushflow/AzerothBuddy`.
+- `TEMP/UEBERGABE.md` hält lokal Ziel, Änderungen, Prüfstatus und nächsten Schritt fest.

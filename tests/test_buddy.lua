@@ -89,16 +89,21 @@ function UnitFactionGroup() return 'Alliance' end
 function GetProfessions() return nil,nil end
 function GetAverageItemLevel() return 275,275 end
 function UnitLevel() return 90 end
-function UnitXPMax() return 0 end
+local xpReads,restedReads=0,0
+function UnitXPMax() xpReads=xpReads+1;return 1000 end
+function GetXPExhaustion() restedReads=restedReads+1;return 251 end
 function time() return 1000 end
 function FauxScrollFrame_Update() end
 function FauxScrollFrame_GetOffset(f) return rawget(f,"offset") or 0 end
 function FauxScrollFrame_SetOffset(f,v) f.offset=v end
-LOCALIZED_CLASS_NAMES_MALE={HUNTER='Jäger',MAGE='Magier'}
+LOCALIZED_CLASS_NAMES_MALE={HUNTER='Jäger',MAGE='Magier',EVOKER='Rufer'}
 SlashCmdList.ALTM()
 local characters=AzerothBuddyCharactersFrame
 assert(characters:IsShown() and characters.height==420,'compact character view')
 assert(characters.rows[1].cells[3].text=='Jäger','localized class label')
+local snapshot=Buddy.db.characters.chars['Realm-Buddy']
+assert(xpReads==1 and restedReads==1,'read XP and rested XP once per character snapshot')
+assert(snapshot.xpmax==1000 and snapshot.rested_xp==251 and snapshot.restxp_pct==25.1)
 for i=1,20 do Buddy.db.characters.chars['alt'..i]={name='Alt'..i,realm='Realm',class='MAGE',level=i,playtime_sec=i*60} end
 characters.Render();assert(characters.height==630,'row cap at twelve')
 characters.scroll.offset=9
@@ -109,7 +114,14 @@ characters.Render();assert(characters.empty:IsShown(),'empty filter state')
 characters.clearBtn.scripts.OnClick();assert(not characters.empty:IsShown())
 characters.headers[7].scripts.OnClick();assert(Buddy.db.characters.sort.key=='level' and Buddy.db.characters.sort.asc)
 characters.tab2.scripts.OnClick();assert(characters.headers[1].text.text=='Klasse' and characters.rows[1].cells[1].text=='Magier')
-characters.tab1.scripts.OnClick();assert(characters.headers[1].text.text=='Realm' and characters.scroll.offset==0)
+for _,class in ipairs({'WARRIOR','PALADIN','HUNTER','ROGUE','PRIEST','DEATHKNIGHT','SHAMAN','WARLOCK','MONK','DRUID','DEMONHUNTER','EVOKER'}) do
+    Buddy.db.characters.chars[class]={name=class,realm='Realm',class=class,playtime_sec=class=='EVOKER' and 0 or 60}
+end
+characters.Render()
+assert(characters.height==660 and characters.scroll.offset==0, 'class statistics fit thirteen rows without scrolling')
+assert(characters.rows[13]:IsShown() and characters.rows[13].cells[1].text=='Rufer', 'last class is visible')
+characters.tab1.scripts.OnClick();assert(characters.headers[1].text.text=='Realm' and characters.scroll.offset==0
+    and characters.height==630 and not characters.rows[13]:IsShown())
 print('PASS: character layout, localization, row cap, filtering, empty state, sorting and tabs')
 SlashCmdList.AZEROTHBUDDYOMNIUM('')
 assert(AzerothBuddyOmniumFrame:IsShown())

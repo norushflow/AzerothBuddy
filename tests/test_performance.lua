@@ -30,10 +30,15 @@ for i,keys in ipairs({{'fire','orbs'},{'mend','shell'},{'lingering'},{'crit','ha
  for j,key in ipairs(keys) do local id=i*100+j;n.entryIDs[j]=id;entries[id]={definitionID=O.runes[key],isAvailable=true} end
  n.activeEntry={entryID=n.entryIDs[1]}
 end
+local entryReads,definitionReads=0,0
 C_Traits={GetConfigIDByTreeID=function() return 77 end,GetConfigInfo=function() return {treeIDs={1186}} end,
  GetTreeNodes=function() return {1,2,3,4,5} end,GetNodeInfo=function(_,id) return nodes[id] end,
- GetEntryInfo=function(_,id) return entries[id] end,GetDefinitionInfo=function(id) return {spellID=id} end}
+ GetEntryInfo=function(_,id) entryReads=entryReads+1;return entries[id] end,
+ GetDefinitionInfo=function(id) definitionReads=definitionReads+1;return {spellID=id} end}
 local state=O.Read();assert(#state.rows==5 and state.rows[1].activeSpell==O.runes.fire)
 print('Omnium spell API calls per scan: '..reads)
-if not arg[1] then assert(reads<=20,'per-scan spell name cache') end
+if not arg[1] then
+ assert(reads<=20,'per-scan spell name cache')
+ assert(entryReads<=14 and definitionReads<=14,'reuse definitions for the three active matching runes')
+end
 print('PASS: performance counters and fade lifecycle')

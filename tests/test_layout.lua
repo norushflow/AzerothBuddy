@@ -14,6 +14,8 @@ local function frame(l,r,t,b,scale)
  return f
 end
 UIParent=frame(0,1920,1080,0)
+local rootScaleReads=0
+function UIParent:GetEffectiveScale() rootScaleReads=rootScaleReads+1;return self.scale end
 Minimap=frame(1700,1900,1050,850)
 MinimapCluster=frame(1700,1900,1050,820)
 local bar=frame(1750,1900,830,806)
@@ -26,12 +28,14 @@ function InCombatLockdown() return combat end
 assert(loadfile('Layout.lua'))('AzerothBuddy',Buddy)
 Buddy.PlaceAutomatic()
 assert(delve.x*0.8==1918 and delve.y*0.8==810,'delve uses free minimap anchor')
+assert(rootScaleReads==1,'placement reuses the validated root scale')
 Buddy.Tiefen.db.position={};delve.x=10
 Buddy.PlaceAutomatic();assert(delve.x==10,'manual position respected')
 Buddy.Tiefen.db.position=nil;Buddy.Tiefen.db.unlocked=true
 Buddy.PlaceAutomatic();assert(delve.x==10,'unlocked window can be dragged')
 Buddy.Tiefen.db.unlocked=false;combat=true
 Buddy.PlaceAutomatic();assert(delve.x==10,'no reanchoring during combat')
+assert(rootScaleReads==1,'manual, unlocked and combat layouts skip geometry reads')
 combat=false;bar.shown=false
 local x,y=Buddy.MinimapAnchor();assert(x==1918 and y==810,'hidden icon bar ignored')
 print('PASS: minimap/icon clearance, scaled alignment, manual positions, dragging and combat')

@@ -1,10 +1,16 @@
 # Changelog
 
+## 1.0.8
+
+- Show all 13 classes in the character window’s Class Statistics tab without scrolling.
+- Reduce repeated character, Omnium and layout work.
+- Streamline local checks and make release ZIPs reproducible.
+
 ## 1.0.7
 
-- Deutsche und englische Sprachdateien mit gemeinsamer Codebasis; `enUS`/`enGB` und Englisch als Fallback für weitere Sprachen.
-- Die Zentrale schließt beim Aufrufen eines Moduls; Aktionsleisten behalten das Menü offen.
-- Englische Aliasse `relaxed`, `safe` und `fast` für die Valeera-Befehle.
+- Added German and English localization, with English as the fallback.
+- The hub closes when opening a module and stays open for action bars.
+- Added the English Valeera command aliases `relaxed`, `safe` and `fast`.
 
 ## 1.0.6
 

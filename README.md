@@ -1,4 +1,4 @@
-# AzerothBuddy 1.0.7
+# AzerothBuddy 1.0.8
 
 <p align="center"><img src="branding/icon-400.png" alt="AzerothBuddy" width="160" height="160"></p>
 

@@ -13,8 +13,10 @@ AltMiniDB.filters = AltMiniDB.filters or { class = nil, prof = nil }
 local FONT_PATH  = STANDARD_TEXT_FONT
 local FONT_SIZE  = 14
 local ROW_H      = 30
-local LIST_ROWS    = 12 -- Zeilenpool; sichtbar sind je nach Datenmenge 5…12
+local LIST_ROWS  = 12
+local STATS_ROWS = LIST_ROWS + 1
 local LIST_TOP = 226
+local FOOTER_H = 44
 
 -- Tab State
 local CURRENT_TAB = 1
@@ -140,15 +142,8 @@ local _, equipped = GetAverageItemLevel()
 return math.floor(SafeNum(equipped) + 0.5)
 end
 
-local function GetRestedXPNow()
-local rested = (GetXPExhaustion and GetXPExhaustion()) or 0
-return SafeNum(rested)
-end
-
-local function GetRestXPPercent()
-local maxXP = SafeNum(UnitXPMax("player"))
+local function GetRestXPPercent(maxXP, rested)
 if maxXP <= 0 then return 0 end
-local rested = GetRestedXPNow()
 if rested <= 0 then return 0 end
 return (rested / maxXP) * 100
 end
@@ -191,10 +186,10 @@ c.level   = SafeNum(UnitLevel("player"))
 c.ilvl    = SafeNum(GetItemLevel())
 
 c.xpmax = SafeNum(UnitXPMax("player"))
-c.rested_xp = SafeNum(GetRestedXPNow())
+c.rested_xp = GetXPExhaustion and SafeNum(GetXPExhaustion()) or 0
 c.rested_ts = time()
 
-c.restxp_pct = Round1(GetRestXPPercent())
+c.restxp_pct = Round1(GetRestXPPercent(c.xpmax, c.rested_xp))
 c.updated = time()
 end
 
@@ -392,7 +387,7 @@ ui:SetFrameLevel(100)
 
 ui:SetSize(1260, 450)
 ui:SetClampedToScreen(true)
-ui:SetScale(math.min(1, (UIParent:GetWidth() - 40) / 1260, (UIParent:GetHeight() - 40) / 630))
+ui:SetScale(math.min(1, (UIParent:GetWidth() - 40) / 1260, (UIParent:GetHeight() - 40) / (LIST_TOP + STATS_ROWS * ROW_H + FOOTER_H)))
 ui:SetPoint("CENTER")
 ui:SetMovable(true)
 ui:EnableMouse(true)
@@ -569,7 +564,7 @@ sf:SetPoint("TOPLEFT", 20, -LIST_TOP)
 sf:SetPoint("BOTTOMRIGHT", -28, 42)
 
 ui.rows = {}
-for i = 1, LIST_ROWS do
+for i = 1, STATS_ROWS do
 local row = CreateFrame("Button", nil, ui)
 row:SetHeight(ROW_H)
 row:SetPoint("TOPLEFT", 24, -LIST_TOP - (i-1)*ROW_H)
@@ -701,7 +696,7 @@ end
 local data = BuildSortedList()
 local total = #data
 local rowsVisible = math.max(5, math.min(LIST_ROWS, total))
-ui:SetHeight(LIST_TOP + rowsVisible * ROW_H + 44)
+ui:SetHeight(LIST_TOP + rowsVisible * ROW_H + FOOTER_H)
 ui.summary:SetText(total .. L[" Charaktere · Spaltenüberschrift zum Sortieren anklicken"])
 ui.empty:SetShown(total == 0)
 for i=rowsVisible+1,#ui.rows do ui.rows[i]:Hide() end
@@ -778,8 +773,8 @@ end
 
 local stats = GetClassStats()
 local total = #stats
-local rowsVisible = math.max(5, math.min(LIST_ROWS, total))
-ui:SetHeight(LIST_TOP + rowsVisible * ROW_H + 44)
+local rowsVisible = math.max(5, math.min(STATS_ROWS, total))
+ui:SetHeight(LIST_TOP + rowsVisible * ROW_H + FOOTER_H)
 ui.summary:SetText(total .. L[" Klassen · Erfasste Spielzeit pro Klasse"])
 ui.empty:SetShown(total == 0)
 for i=rowsVisible+1,#ui.rows do ui.rows[i]:Hide() end
