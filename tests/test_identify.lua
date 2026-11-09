@@ -1,3 +1,4 @@
+local loadfile = dofile("tests/load_locales.lua")
 local B={Tiefen={}}
 assert(loadfile('Modules/Tiefen/Rules.lua'))('AzerothBuddy',B)
 local T=B.Tiefen

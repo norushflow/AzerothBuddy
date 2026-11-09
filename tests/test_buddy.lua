@@ -1,3 +1,4 @@
+local loadfile = dofile("tests/load_locales.lua")
 local frames={}
 local methods={}
 function methods:SetScript(k,v) self.scripts[k]=v end
@@ -205,3 +206,19 @@ inside=false;TB.events.scripts.OnEvent(nil,'PLAYER_ENTERING_WORLD')
 assert(not TB.active and not TB.panel:IsShown(),'exit hides advisor immediately even in combat')
 combat=false
 print('PASS: read-only Valeera UI, legacy data isolation, controls, style, toggle and exit')
+
+-- Menu items close the hub; the inline action bar controls stay accessible.
+for _,module in ipairs(Buddy.modules) do
+    local handler=SlashCmdList[module.command]
+    local called=false
+    SlashCmdList[module.command]=function() called=true end
+    Buddy.panel:Show()
+    Buddy.OpenModule(module)
+    if module.key=="bars" then
+        assert(Buddy.panel:IsShown(),"bars must keep the hub open")
+    else
+        assert(called and not Buddy.panel:IsShown(),"module must close the hub: "..module.key)
+    end
+    SlashCmdList[module.command]=handler
+end
+print('PASS: menu closes for modules and stays open for action bars')

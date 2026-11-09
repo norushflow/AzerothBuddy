@@ -1,3 +1,4 @@
+local loadfile = dofile("tests/load_locales.lua")
 local B={Tiefen={}}
 local T=B.Tiefen
 local combat,staged=false,false

@@ -1,4 +1,5 @@
 local _, Buddy = ...
+local L = Buddy.L
 local TB = Buddy.Tiefen
 
 -- Blizzard erlaubt Änderungen an der Begleiterkonfiguration nur außerhalb des
@@ -163,7 +164,7 @@ function TB.TryApply()
     local style = TB.pendingStyle
     if not style or style ~= TB.style or not TB.styles[style] then return false, "idle" end
     if TB.InCombat() then
-        Message(style, "Übernahme nach dem Kampf vorgemerkt.")
+        Message(style, L["Übernahme nach dem Kampf vorgemerkt."])
         return false, "combat"
     end
     local snapshot = TB.Snapshot()
@@ -173,51 +174,51 @@ function TB.TryApply()
     if TB.Call(C_Traits, "ConfigHasStagedChanges", snapshot.config) == false
         and recommendation.changes == 0 and recommendation.missing == 0 then
         TB.pendingStyle = nil
-        Message(style, "Einstellungen übernommen.")
+        Message(style, L["Einstellungen übernommen."])
         return true, "done"
     end
     local config = snapshot.config
     if not number(config) then
         TB.status = TB.Public(snapshot.error) and snapshot.error
-            or (TB.styles[style] .. " · Valeera ist noch nicht verfügbar; Übernahme vorgemerkt.")
+            or (TB.styles[style] .. L[" · Valeera ist noch nicht verfügbar; Übernahme vorgemerkt."])
         return false, "unavailable"
     end
     local allowed, reason = TB.CanWrite(config)
     if not allowed then
         if reason == "interaction" then
-            Message(style, "Übernahme an den Begleitervorräten vorgemerkt.")
+            Message(style, L["Übernahme an den Begleitervorräten vorgemerkt."])
         elseif reason == "staged" then
-            Message(style, "Offene Änderungen in Valeeras Konfiguration; Übernahme vorgemerkt.")
+            Message(style, L["Offene Änderungen in Valeeras Konfiguration; Übernahme vorgemerkt."])
         elseif reason == "locked" then
-            Message(style, "Konfiguration gesperrt; Übernahme vorgemerkt.")
+            Message(style, L["Konfiguration gesperrt; Übernahme vorgemerkt."])
         elseif reason ~= "combat" then
-            Message(style, "Übernahme vorgemerkt.")
+            Message(style, L["Übernahme vorgemerkt."])
         end
         return false, reason
     end
     local changes, missing = Plan(config, snapshot, recommendation)
     if #changes == 0 then
-        Message(style, "Gesperrte Auswahl bleibt offen; keine Änderung nötig.")
+        Message(style, L["Gesperrte Auswahl bleibt offen; keine Änderung nötig."])
         return false, "missing"
     end
     local ok, failure = Commit(config, changes)
     if not ok then
-        local reasons={write="WoW hat die Auswahl abgelehnt; Freischaltung und Begleitervorräte prüfen.",
-            notready="Konfiguration noch nicht speicherbereit oder Kampf begonnen.",
-            commit="WoW hat das Speichern abgelehnt; Auswahl bleibt vorgemerkt."}
-        Message(style, reasons[failure] or "Übernahme nicht abgeschlossen; weiter vorgemerkt.")
+        local reasons={write=L["WoW hat die Auswahl abgelehnt; Freischaltung und Begleitervorräte prüfen."],
+            notready=L["Konfiguration noch nicht speicherbereit oder Kampf begonnen."],
+            commit=L["WoW hat das Speichern abgelehnt; Auswahl bleibt vorgemerkt."]}
+        Message(style, reasons[failure] or L["Übernahme nicht abgeschlossen; weiter vorgemerkt."])
         return false, failure
     end
     if not Verify(config, changes) then
-        Message(style, "Übernahme wird geprüft; weiter vorgemerkt.")
+        Message(style, L["Übernahme wird geprüft; weiter vorgemerkt."])
         return false, "verify"
     end
     if missing > 0 or recommendation.changes > #changes then
-        Message(style, "Teilweise übernommen; Gift oder Kuriosität gesperrt/nicht erkannt. Begleitervorräte prüfen.")
+        Message(style, L["Teilweise übernommen; Gift oder Kuriosität gesperrt/nicht erkannt. Begleitervorräte prüfen."])
         return false, "partial"
     end
     TB.pendingStyle = nil
-    Message(style, "Einstellungen übernommen.")
+    Message(style, L["Einstellungen übernommen."])
     return true, "done"
 end
 
@@ -236,6 +237,6 @@ function TB.CheckPending(snapshot, recommendation)
     if TB.Call(C_Traits, "ConfigHasStagedChanges", snapshot.config) == false
         and recommendation.changes == 0 and recommendation.missing == 0 then
         TB.pendingStyle = nil
-        Message(style, "Einstellungen übernommen.")
+        Message(style, L["Einstellungen übernommen."])
     end
 end

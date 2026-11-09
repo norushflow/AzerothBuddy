@@ -1,3 +1,4 @@
+local loadfile = dofile("tests/load_locales.lua")
 local B={db={omnium={}}}
 SlashCmdList={}
 local queue={}

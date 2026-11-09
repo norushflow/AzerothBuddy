@@ -1,4 +1,5 @@
 local _, Buddy = ...
+local L = Buddy.L
 local B=Buddy.Bars
 
 local flushQueued,loadQueued,retryQueued=false,false,false
@@ -7,7 +8,7 @@ function Buddy.LoadBars()
     B.db=Buddy.db.bars
     B.db.library=B.Table(B.db.library) and B.db.library or {}
     if B.db.automatic==nil then B.db.automatic=true end
-    B.dirty={};B.ready=false;B.note="Wartet auf Anmeldung"
+    B.dirty={};B.ready=false;B.note=L["Wartet auf Anmeldung"]
     B.class,B.spec=nil,nil
     B.ignoreUntil=0
 
@@ -24,7 +25,7 @@ function Buddy.LoadBars()
         if B.RefreshMenu then B.RefreshMenu() end
     end
     function B.RowText()
-        return "Aktionsleisten · Automatik "..((B.db and B.db.automatic) and "AN" or "AUS")
+        return L["Aktionsleisten · Automatik "]..((B.db and B.db.automatic) and L["AN"] or L["AUS"])
     end
 
     local function stamp(profile,name)
@@ -37,14 +38,14 @@ function Buddy.LoadBars()
         local reason=B.Reason()
         if reason then B.SetNote(reason);if announce then Buddy.Message(reason) end;return false end
         if B.busy or not B.ready then
-            B.SetNote("Leisten werden noch eingelesen")
-            if announce then Buddy.Message("Leisten werden noch eingelesen") end
+            B.SetNote(L["Leisten werden noch eingelesen"])
+            if announce then Buddy.Message(L["Leisten werden noch eingelesen"]) end
             return false
         end
         local _,class,spec,_,name,label=B.Profile()
         if not class then
-            B.SetNote("Keine Spezialisierung erkannt")
-            if announce then Buddy.Message("Keine Spezialisierung erkannt") end
+            B.SetNote(L["Keine Spezialisierung erkannt"])
+            if announce then Buddy.Message(L["Keine Spezialisierung erkannt"]) end
             return false
         end
         local actions, unreadable, ignored = {}, {}, 0
@@ -61,19 +62,19 @@ function Buddy.LoadBars()
             end
         end
         if #unreadable==#B.slots then
-            B.SetNote("Speichern abgebrochen: kein Leistenplatz lesbar")
-            if announce then Buddy.Message("Speichern abgebrochen: kein Leistenplatz lesbar") end
+            B.SetNote(L["Speichern abgebrochen: kein Leistenplatz lesbar"])
+            if announce then Buddy.Message(L["Speichern abgebrochen: kein Leistenplatz lesbar"]) end
             return false
         end
         local notes={}
         if #unreadable>0 then
             local shown={}
             for index=1,math.min(#unreadable,5) do shown[index]=unreadable[index] end
-            notes[#notes+1]=#unreadable..(#unreadable==1 and " Platz nicht lesbar (" or " Plätze nicht lesbar (")
+            notes[#notes+1]=#unreadable..(#unreadable==1 and L[" Platz nicht lesbar ("] or L[" Plätze nicht lesbar ("])
                 ..table.concat(shown,", ")..(#unreadable>5 and ", ..." or "")..")"
         end
         if ignored>0 then
-            notes[#notes+1]=ignored..(ignored==1 and " allgemeines Makro ignoriert" or " allgemeine Makros ignoriert")
+            notes[#notes+1]=ignored..(ignored==1 and L[" allgemeines Makro ignoriert"] or L[" allgemeine Makros ignoriert"])
         end
         local details=#notes>0 and (" · "..table.concat(notes," · ")) or ""
         local profile={actions=actions,specialization=label}
@@ -81,8 +82,8 @@ function Buddy.LoadBars()
         B.db.library[class]=B.Table(B.db.library[class]) and B.db.library[class] or {}
         B.db.library[class][spec]=profile
         B.dirty={}
-        B.SetNote("Vorlage gespeichert"..details)
-        if announce then Buddy.Message("Vorlage für "..(label or tostring(spec)).." gespeichert"..details) end
+        B.SetNote(L["Vorlage gespeichert"]..details)
+        if announce then Buddy.Message(L["Vorlage für "]..(label or tostring(spec))..L[" gespeichert"]..details) end
         return true
     end
 
@@ -115,33 +116,33 @@ function Buddy.LoadBars()
         B.dirty={}
         if changed then
             stamp(profile,name)
-            B.SetNote("Änderungen automatisch gespeichert")
+            B.SetNote(L["Änderungen automatisch gespeichert"])
         end
     end
 
     function B.Apply(announce)
         local profile,class,spec,_,_,label=B.Profile()
         if not class then
-            B.pending=nil;B.SetNote("Keine Spezialisierung erkannt");return false
+            B.pending=nil;B.SetNote(L["Keine Spezialisierung erkannt"]);return false
         end
         if not B.Table(profile) or not B.Table(profile.actions) then
-            B.pending=nil;B.SetNote("Keine Vorlage für diese Spezialisierung");return false
+            B.pending=nil;B.SetNote(L["Keine Vorlage für diese Spezialisierung"]);return false
         end
         local reason=B.Reason()
         if reason then
             B.pending=true;B.SetNote(reason)
-            if announce then Buddy.Message(reason.."; Laden wird nachgeholt") end
+            if announce then Buddy.Message(reason..L["; Laden wird nachgeholt"]) end
             return false
         end
         if B.busy then return false end
         if not B.APIs() then
-            B.SetNote("Leisten-API fehlt; nichts geändert")
-            if announce then Buddy.Message("Leisten-API fehlt; nichts geändert") end
+            B.SetNote(L["Leisten-API fehlt; nichts geändert"])
+            if announce then Buddy.Message(L["Leisten-API fehlt; nichts geändert"]) end
             return false
         end
         if not B.CursorFree() then
-            B.SetNote("Mauszeiger ist belegt; nichts geändert")
-            if announce then Buddy.Message("Mauszeiger ist belegt; nichts geändert") end
+            B.SetNote(L["Mauszeiger ist belegt; nichts geändert"])
+            if announce then Buddy.Message(L["Mauszeiger ist belegt; nichts geändert"]) end
             return false
         end
         B.pending=nil;B.busy=true;B.dirty={}
@@ -205,19 +206,19 @@ function Buddy.LoadBars()
             if #missingMacros>0 then
                 local shown={}
                 for index=1,math.min(#missingMacros,5) do shown[index]=missingMacros[index] end
-                details[#details+1]="fehlende Charakter-Makros: "..table.concat(shown,", ")
+                details[#details+1]=L["fehlende Charakter-Makros: "]..table.concat(shown,", ")
                     ..(#missingMacros>5 and ", ..." or "")
             end
             if ignored>0 then
-                details[#details+1]=ignored..(ignored==1 and " allgemeines Makro ignoriert" or " allgemeine Makros ignoriert")
+                details[#details+1]=ignored..(ignored==1 and L[" allgemeines Makro ignoriert"] or L[" allgemeine Makros ignoriert"])
             end
-            local summary=changed.." Plätze geladen, "..skipped.." ausgelassen"
+            local summary=changed..L[" Plätze geladen, "]..skipped..L[" ausgelassen"]
                 ..(#details>0 and (" · "..table.concat(details," · ")) or "")
             B.SetNote(summary)
-            if announce then Buddy.Message("Vorlage geladen: "..summary) end
+            if announce then Buddy.Message(L["Vorlage geladen: "]..summary) end
         else
-            B.SetNote("Laden unterbrochen; Leisten prüfen und erneut laden")
-            if announce then Buddy.Message("Laden unterbrochen; Leisten prüfen und erneut laden") end
+            B.SetNote(L["Laden unterbrochen; Leisten prüfen und erneut laden"])
+            if announce then Buddy.Message(L["Laden unterbrochen; Leisten prüfen und erneut laden"]) end
         end
         return ok
     end
@@ -248,11 +249,11 @@ function Buddy.LoadBars()
         B.ready=true
         B.dirty={}
         if not class then
-            B.SetNote("Keine Spezialisierung erkannt")
+            B.SetNote(L["Keine Spezialisierung erkannt"])
         elseif B.db.automatic then
             B.Apply(false)
         else
-            B.SetNote("Automatik aus")
+            B.SetNote(L["Automatik aus"])
         end
     end
 
@@ -268,15 +269,15 @@ function Buddy.LoadBars()
     function B.SetAutomatic(enabled)
         B.db.automatic=enabled and true or false
         B.pending=nil;B.dirty={}
-        B.SetNote(B.db.automatic and "Automatik an" or "Automatik aus")
+        B.SetNote(B.db.automatic and L["Automatik an"] or L["Automatik aus"])
         if B.db.automatic then B.QueueLoad(.3) end
     end
 
     function B.Status()
         local profile,_,_,_,_,label=B.Profile()
-        local state=B.db.automatic and "Automatik AN" or "Automatik AUS"
-        local suffix=B.Table(profile) and "Vorlage vorhanden" or "keine Vorlage"
-        return state,label or "Keine Spezialisierung erkannt",suffix,B.Table(profile) and profile or nil
+        local state=B.db.automatic and L["Automatik AN"] or L["Automatik AUS"]
+        local suffix=B.Table(profile) and L["Vorlage vorhanden"] or L["keine Vorlage"]
+        return state,label or L["Keine Spezialisierung erkannt"],suffix,B.Table(profile) and profile or nil
     end
 
     -- Kompakte Bedienung im bestehenden Buddy-Menü; kein eigenes Fenster.
@@ -286,7 +287,7 @@ function Buddy.LoadBars()
         box:SetPoint("TOPLEFT",22,top);box:SetSize(346,B.MENU_HEIGHT)
         Buddy.Style.Inset(box)
         local title=box:CreateFontString(nil,"OVERLAY","GameFontNormalSmall")
-        title:SetPoint("TOPLEFT",10,-8);title:SetText("Aktionsleisten-Vorlagen")
+        title:SetPoint("TOPLEFT",10,-8);title:SetText(L["Aktionsleisten-Vorlagen"])
         B.menuStatus=box:CreateFontString(nil,"OVERLAY","GameFontHighlightSmall")
         B.menuStatus:SetPoint("TOPLEFT",10,-27);B.menuStatus:SetWidth(326)
         B.menuStatus:SetJustifyH("LEFT")
@@ -294,10 +295,10 @@ function Buddy.LoadBars()
         B.menuNote:SetPoint("TOPLEFT",10,-45);B.menuNote:SetWidth(326)
         B.menuNote:SetJustifyH("LEFT")
         local save=Buddy.Style.Button(CreateFrame("Button",nil,box,"UIPanelButtonTemplate"))
-        save:SetSize(150,24);save:SetPoint("BOTTOMLEFT",10,10);save:SetText("Vorlage speichern")
+        save:SetSize(150,24);save:SetPoint("BOTTOMLEFT",10,10);save:SetText(L["Vorlage speichern"])
         save:SetScript("OnClick",function() B.Save(true) end)
         local load=Buddy.Style.Button(CreateFrame("Button",nil,box,"UIPanelButtonTemplate"))
-        load:SetSize(150,24);load:SetPoint("BOTTOMRIGHT",-10,10);load:SetText("Vorlage laden")
+        load:SetSize(150,24);load:SetPoint("BOTTOMRIGHT",-10,10);load:SetText(L["Vorlage laden"])
         load:SetScript("OnClick",function() B.Apply(true) end)
         B.menu=box
         B.RefreshMenu()

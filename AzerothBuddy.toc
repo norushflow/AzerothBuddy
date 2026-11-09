@@ -1,12 +1,15 @@
 ## Interface: 120105
 ## Title: AzerothBuddy
-## Notes: Charaktere, Valeera-Berater und Omniumfoliant in einem Addon.
+## Notes: Characters, Valeera advisor and Omnium Tome in one addon.
+## Notes-deDE: Charaktere, Valeera-Berater und Omniumfoliant in einem Addon.
 ## Author: norushflow
-## Version: 1.0.6
+## Version: 1.0.7
 ## X-Curse-Project-ID: 1791270
 ## IconTexture: Interface\AddOns\AzerothBuddy\Media\BuddyIcon
 ## SavedVariables: AzerothBuddyDB
 ## SavedVariablesPerCharacter: AzerothBuddyCharDB
+Locales/enUS.lua
+Locales/deDE.lua
 Core.lua
 Style.lua
 Layout.lua

@@ -1,3 +1,4 @@
+local loadfile = dofile("tests/load_locales.lua")
 -- Fremde Blizzard-Fenster und API-Felder im Tiefen-Modul nur gesichert lesen.
 -- Belegt Aufrufverträge und Rückfälle; kein Client-, Taint- oder Sichtnachweis.
 local B={Tiefen={}}

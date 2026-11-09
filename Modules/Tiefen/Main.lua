@@ -1,4 +1,5 @@
 local _, Buddy = ...
+local L = Buddy.L
 local TB = Buddy.Tiefen
 local events = CreateFrame("Frame")
 local queued
@@ -73,10 +74,10 @@ function TB.SetStyle(style)
 end
 
 local function Command(input)
-    if not TB.Context().inside then TB.Message("Der Berater öffnet sich nur innerhalb einer Tiefe."); return end
-    if TB.InCombat() then TB.Message("Bitte das Kampfende abwarten."); return end
+    if not TB.Context().inside then TB.Message(L["Der Berater öffnet sich nur innerhalb einer Tiefe."]); return end
+    if TB.InCombat() then TB.Message(L["Bitte das Kampfende abwarten."]); return end
     local cmd,value=(input or ""):lower():match("^(%S*)%s*(.-)$")
-    local styles={sicher="safe", tempo="fast", entspannt="relaxed"}
+    local styles={sicher="safe", tempo="fast", entspannt="relaxed", safe="safe", fast="fast", relaxed="relaxed"}
     if cmd=="" then
         if not TB.active then TB.SetActive(true) end
         TB.visibility=not TB.panel:IsShown(); TB.Refresh()
@@ -85,17 +86,17 @@ local function Command(input)
     elseif cmd=="auto" then TB.db.autoShow=not TB.db.autoShow; TB.visibility=nil; TB.Refresh()
     elseif cmd=="unlock" or cmd=="lock" then
         TB.db.unlocked=cmd=="unlock"
-        TB.Message(TB.db.unlocked and "Zum Verschieben die Kopfzeile ziehen." or "Position gesperrt.")
+        TB.Message(TB.db.unlocked and L["Zum Verschieben die Kopfzeile ziehen."] or L["Position gesperrt."])
     elseif cmd=="reset" then TB.db.position=nil; TB.db.scale=1; TB.Place()
     elseif cmd=="scale" or cmd=="combat" or cmd=="alpha" then
         local number=tonumber(value)
-        if not number then TB.Message("Bitte einen Zahlenwert angeben."); return end
+        if not number then TB.Message(L["Bitte einen Zahlenwert angeben."]); return end
         if cmd=="scale" then TB.db.scale=math.max(.7,math.min(1.5,number)); TB.Place()
         elseif cmd=="combat" then TB.db.combatAlpha=math.max(0,math.min(1,number/100))
         else TB.db.alpha=math.max(.2,math.min(1,number/100)) end
         TB.CombatUI()
     else
-        TB.Message("/tb · /tb valeera · /tb entspannt|sicher|tempo · /tb auto · /tb unlock|lock · /tb scale 1.1 · /tb combat 12 · /tb alpha 95 · /tb reset")
+        TB.Message(L["/tb · /tb valeera · /tb entspannt|sicher|tempo · /tb auto · /tb unlock|lock · /tb scale 1.1 · /tb combat 12 · /tb alpha 95 · /tb reset"])
     end
 end
 

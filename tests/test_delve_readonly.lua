@@ -1,3 +1,4 @@
+local loadfile = dofile("tests/load_locales.lua")
 -- Controller-Lebenszyklus: normale Aktualisierungen bleiben lesend, Schreibversuche
 -- laufen nur über Moduswechsel und nachweisliche Begleiter-Interaktionen.
 local queue,frames={},{}

@@ -1,3 +1,4 @@
+local loadfile = dofile("tests/load_locales.lua")
 -- Automatische Übernahme der Tiefenbegleiter-Modi auf Valeera.
 -- Belegt Interaktionsgates, Vormerkung, Rollback und idempotentes Verhalten in LuaJIT.
 -- Kein Client-, Taint-, Reichweiten- oder Optiknachweis.

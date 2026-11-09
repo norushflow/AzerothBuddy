@@ -1,4 +1,5 @@
 local _, Buddy = ...
+local L = Buddy.L
 local TB = Buddy.Tiefen
 local GOLD, WHITE, GREY = "|cffffd100", "|cfff1eee6", "|cffaaa79f"
 local GREEN, AMBER = "|cff85d9a0", "|cffffb66b"
@@ -58,7 +59,7 @@ function TB.CreateUI()
     panel:SetMovable(true); panel:EnableMouse(true)
     Buddy.Style.Window(panel)
     local accent=panel:CreateTexture(nil,"ARTWORK"); accent:SetSize(3,34); accent:SetPoint("TOPLEFT",0,-14); accent:SetColorTexture(.95,.73,.3,.9)
-    title=Label(panel,GOLD.."AzerothBuddy · Valeera|r",16,-16,350,24,"GameFontNormalLarge")
+    title=Label(panel,GOLD..L["AzerothBuddy · Valeera|r"],16,-16,350,24,"GameFontNormalLarge")
     context=Label(panel,"",16,-44,WIDTH-32,32,"GameFontHighlightSmall")
     Button(panel,"×",WIDTH-36,-11,25,function() TB.visibility=false; panel:Hide() end)
     local drag=CreateFrame("Frame",nil,panel); drag:SetPoint("TOPLEFT",0,0); drag:SetSize(WIDTH-42,42); drag:EnableMouse(true)
@@ -89,8 +90,8 @@ function TB.CreateUI()
         frame:SetScript("OnLeave",Buddy.HideTooltip)
         rows[i]=frame
     end
-    Button(panel,"Neu einlesen",14,-483,245,function() TB.Refresh() end)
-    Button(panel,"Valeera öffnen",264,-483,160,function() TB.OpenCompanion() end)
+    Button(panel,L["Neu einlesen"],14,-483,245,function() TB.Refresh() end)
+    Button(panel,L["Valeera öffnen"],264,-483,160,function() TB.OpenCompanion() end)
     status=Label(panel,"",16,-518,WIDTH-32,41,"GameFontHighlightSmall")
     panel:SetScript("OnHide", Buddy.HideTooltip)
     panel:Hide()
@@ -120,38 +121,38 @@ end
 function TB.Render()
     if not panel or not TB.player then return end
     local player,snapshot,recommendation=TB.player,TB.snapshot or {},TB.recommendation
-    title:SetText(GOLD .. "AzerothBuddy · Valeera|r")
-    local className, playerName = plain(player.className), plain(player.name) or "Unbekannt"
+    title:SetText(GOLD .. L["AzerothBuddy · Valeera|r"])
+    local className, playerName = plain(player.className), plain(player.name) or L["Unbekannt"]
     local level = integer(snapshot.level)
     context:SetText(WHITE .. (className and className.." · " or "") .. playerName .. "|r\n" .. GREY
-        .. (level and "Valeera · Stufe "..level or "Valeera · Begleitervorräte") .. "|r")
+        .. (level and L["Valeera · Stufe "]..level or L["Valeera · Begleitervorräte"]) .. "|r")
     local style=TB.style
     for key,b in pairs(styleButtons) do b.bg:SetColorTexture(1,.8,.4,key==style and .17 or .04) end
     if recommendation then
         explanation:SetText(GREY .. TB.styles[style] .. " · " .. (plain(recommendation.reason) or "") .. "|r")
         for i,row in ipairs(recommendation.rows) do
             local frame=rows[i]
-            local marker=row.match and GREEN.."Passt" or row.choice and AMBER.."Ändern" or GREY.."Offen"
+            local marker=row.match and GREEN..L["Passt"] or row.choice and AMBER..L["Ändern"] or GREY..L["Offen"]
             local rank=integer(row.choice and row.choice.rank)
-            rank = rank and " · Rang "..rank or ""
-            frame.name:SetText((row.match and GREEN or GOLD) .. (plain(row.name) or "Unbekannt") .. rank .. "|r")
-            local current=row.current and (plain(row.current.name) or "Noch nicht erkannt") or "Noch nicht erkannt"
+            rank = rank and L[" · Rang "]..rank or ""
+            frame.name:SetText((row.match and GREEN or GOLD) .. (plain(row.name) or L["Unbekannt"]) .. rank .. "|r")
+            local current=row.current and (plain(row.current.name) or L["Noch nicht erkannt"]) or L["Noch nicht erkannt"]
             local message
-            if row.match then message="Passt bereits"
-            elseif row.choice then message="Aktuell: "..current
-            else message=(plain(snapshot.error) and "Noch keine Live-Daten") or "Nicht freigeschaltet oder nicht erkannt" end
-            frame.label:SetText(TB.labels[row.slot] .. "   " .. marker .. (row.fallback and " · Alternative" or "") .. "|r")
+            if row.match then message=L["Passt bereits"]
+            elseif row.choice then message=L["Aktuell: "]..current
+            else message=(plain(snapshot.error) and L["Noch keine Live-Daten"]) or L["Nicht freigeschaltet oder nicht erkannt"] end
+            frame.label:SetText(TB.labels[row.slot] .. "   " .. marker .. (row.fallback and L[" · Alternative"] or "") .. "|r")
             frame.detail:SetText(GREY .. message .. "|r"); frame.option=row.choice or row.current
         end
         local text=plain(TB.status) or plain(snapshot.error)
         if not text then
-            if recommendation.changes==0 and recommendation.missing==0 then text="Alles passt. Viel Spaß in der Tiefe!"
-            elseif recommendation.missing>0 then text="Offene Auswahl: "..recommendation.missing..". Verfügbare Alternativen werden berücksichtigt."
-            else text=recommendation.changes.." Empfehlungen weichen ab. Bitte selbst in Valeeras Begleitervorräten auswählen." end
+            if recommendation.changes==0 and recommendation.missing==0 then text=L["Alles passt. Viel Spaß in der Tiefe!"]
+            elseif recommendation.missing>0 then text=L["Offene Auswahl: "]..recommendation.missing..L[". Verfügbare Alternativen werden berücksichtigt."]
+            else text=recommendation.changes..L[" Empfehlungen weichen ab. Bitte selbst in Valeeras Begleitervorräten auswählen."] end
         end
         local members=GetNumGroupMembers and GetNumGroupMembers()
-        if integer(members) and members>=5 then text="Volle Fünfergruppe: Valeera begleitet dich hier nicht."
-        elseif IsInGroup and IsInGroup() then text="Gruppenlauf: Empfehlung ist für solo gedacht. Rollen mit deiner Gruppe abstimmen." end
+        if integer(members) and members>=5 then text=L["Volle Fünfergruppe: Valeera begleitet dich hier nicht."]
+        elseif IsInGroup and IsInGroup() then text=L["Gruppenlauf: Empfehlung ist für solo gedacht. Rollen mit deiner Gruppe abstimmen."] end
         status:SetText(GREY..(plain(text) or "").."|r")
     end
     TB.CombatUI()

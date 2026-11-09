@@ -1,3 +1,4 @@
+local loadfile = dofile("tests/load_locales.lua")
 -- Integration: echte Snapshot-/Empfehlungs-/Schreiblogik, nur WoW-APIs ersetzt.
 local B={Tiefen={}}
 local T=B.Tiefen

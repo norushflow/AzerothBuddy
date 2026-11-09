@@ -1,3 +1,4 @@
+local loadfile = dofile("tests/load_locales.lua")
 -- Deterministic API-call counts; does not claim in-game FPS measurements.
 local root=arg[1] or '.'
 local B={}

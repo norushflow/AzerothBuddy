@@ -1,3 +1,4 @@
+local loadfile = dofile("tests/load_locales.lua")
 -- Vertrags-/Zustandstests für die Aktionsleisten-Vorlagen.
 -- Kein Client, keine Taint-Simulation: geprüft werden Guards, Profile und Ereignisfluss.
 local secret=setmetatable({},{__tostring=function() error('secret formatted') end})

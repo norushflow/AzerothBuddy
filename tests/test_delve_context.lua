@@ -1,3 +1,4 @@
+local loadfile = dofile("tests/load_locales.lua")
 -- Valeera-Kontext ohne Stufen-, POI-, Ressourcen- oder Journalabfragen.
 local TB={}
 assert(loadfile('Modules/Tiefen/Game.lua'))('AzerothBuddy',{Tiefen=TB})

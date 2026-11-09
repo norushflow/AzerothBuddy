@@ -1,4 +1,5 @@
 local _,B=...
+local L = B.L
 local O=B.Omnium
 local function label(p,text,x,y,w)
  local f=p:CreateFontString(nil,"OVERLAY","GameFontHighlight")
@@ -15,7 +16,7 @@ local function overview(p)
  local card=CreateFrame("Frame",nil,p,"BackdropTemplate")
  card:SetSize(450,100);card:SetPoint("TOPLEFT",20,-78)
  B.Style.Inset(card)
- label(card,"|cffffd100Omniumfoliant · Aktive Runen|r",12,-9,420)
+ label(card,L["|cffffd100Omniumfoliant · Aktive Runen|r"],12,-9,420)
  O.icons={}
  local tip=CreateFrame("GameTooltip","AzerothBuddyOmniumTooltip",UIParent,"GameTooltipTemplate")
  for i=1,5 do
@@ -28,12 +29,12 @@ local function overview(p)
   b:SetScript("OnEnter",function(self)
    local row=self.row
    tip:SetOwner(self,"ANCHOR_RIGHT");tip:ClearLines()
-   tip:AddLine(row and row.activeName or "Keine aktive Rune erkannt",1,.82,.3)
+   tip:AddLine(row and row.activeName or L["Keine aktive Rune erkannt"],1,.82,.3)
    if row and row.activeSpell and C_Spell and C_Spell.GetSpellDescription then
     local ok,desc=pcall(C_Spell.GetSpellDescription,row.activeSpell)
     if ok and safeText(desc) then tip:AddLine(desc,1,1,1,true) end
    end
-   if row then tip:AddLine("Empfehlung: "..(O.labels[row.key] or row.key),.8,.8,.8,true);tip:AddLine(row.status,1,1,1) end
+   if row then tip:AddLine(L["Empfehlung: "]..(O.labels[row.key] or row.key),.8,.8,.8,true);tip:AddLine(row.status,1,1,1) end
    tip:Show()
   end)
   b:SetScript("OnLeave",function() tip:Hide() end)
@@ -51,7 +52,7 @@ function O.Render()
  -- name/source sind API-Strings; vor der Verkettung auf Typ prüfen.
  local name=type(s.name)=="string" and s.name~="" and s.name or nil
  local source=type(s.source)=="string" and s.source~="" and s.source or nil
- O.heading:SetText(name and source and (name.." · "..source) or "Spezialisierung lädt …")
+ O.heading:SetText(name and source and (name.." · "..source) or L["Spezialisierung lädt …"])
 
  for i,f in ipairs(O.labelsUI) do
   local row=s.rows and s.rows[i]
@@ -66,7 +67,7 @@ function O.Render()
    f:SetText(i..". "..(name or O.labels[row.key]).."\n|cffaaaaaa"..row.status.."|r")
   else f:SetText("") end
  end
- O.note:SetText(s.error or O.status or "Rolle wählen: verfügbare Runen werden übernommen. Gesperrte Runen bleiben offen.")
+ O.note:SetText(s.error or O.status or L["Rolle wählen: verfügbare Runen werden übernommen. Gesperrte Runen bleiben offen."])
 
 end
 function O.Toggle()
@@ -89,7 +90,7 @@ function O.Toggle()
    B.db.tiefen.position={point,relative,x,y}
    if B.Tiefen and B.Tiefen.db then B.Tiefen.db.position=B.db.tiefen.position end
   end)
-  label(p,"|cffffd100AzerothBuddy · Omniumfoliant|r",20,-20,440)
+  label(p,L["|cffffd100AzerothBuddy · Omniumfoliant|r"],20,-20,440)
   O.heading=label(p,"",20,-52,450)
   overview(p)
   O.roleButtons={}
@@ -97,10 +98,10 @@ function O.Toggle()
    O.roleButtons[i]=button(p,O.roleLabels[role],20+(i-1)*152,-189,146,function() O.SelectRole(role) end)
   end
   O.labelsUI={};for i=1,5 do O.labelsUI[i]=label(p,"",22,-230-(i-1)*45,445) end
-  button(p,"Jetzt übernehmen",20,-497,220,function() O.Apply(true) end)
-  button(p,"Neu einlesen",250,-497,220,function() O.status=nil;O.Render() end)
+  button(p,L["Jetzt übernehmen"],20,-497,220,function() O.Apply(true) end)
+  button(p,L["Neu einlesen"],250,-497,220,function() O.status=nil;O.Render() end)
   O.note=label(p,"",20,-538,450)
-  label(p,"Method · Stand 06.11.2026 · fünf ursprüngliche Reihen\nDrei Rollenstandards, keine Ausrüstungssimulation.",20,-590,450)
+  label(p,L["Method · Stand 06.11.2026 · fünf ursprüngliche Reihen\nDrei Rollenstandards, keine Ausrüstungssimulation."],20,-590,450)
   local close=CreateFrame("Button",nil,p,"UIPanelCloseButton");close:SetPoint("TOPRIGHT",-3,-3)
   UISpecialFrames[#UISpecialFrames+1]="AzerothBuddyOmniumFrame"
  else O.panel:SetShown(not O.panel:IsShown()) end

@@ -1,4 +1,5 @@
 local _, Buddy = ...
+local L = Buddy.L
 local TB = Buddy.Tiefen
 
 function TB.Public(value)
@@ -38,7 +39,7 @@ function TB.Player()
     local id, name, _, _, role
     if number(index) and GetSpecializationInfo then id, name, _, _, role = GetSpecializationInfo(index) end
     local className, class = UnitClass("player")
-    return {spec=number(id) and id or 0, name=text(name) and name or "Spezialisierung lädt",
+    return {spec=number(id) and id or 0, name=text(name) and name or L["Spezialisierung lädt"],
         role=text(role) and role or "DAMAGER", class=text(class) and class or nil,
         className=text(className) and className or nil}
 end
@@ -85,13 +86,13 @@ local function ReadOption(config, entryID, node)
             end
         end
     end
-    option.name = option.name or ("Eintrag " .. entryID)
+    option.name = option.name or (L["Eintrag "] .. entryID)
     return option
 end
 
 function TB.Snapshot()
     local result = {slots={}}
-    if TB.InCombat() then result.error="Im Kampf pausiert die Erkennung."; return result end
+    if TB.InCombat() then result.error=L["Im Kampf pausiert die Erkennung."]; return result end
     -- Blizzard-Fenster nur gesichert lesen. Fehlt der Zugriff, arbeitet die
     -- Erkennung vollständig über die Begleiter-API weiter.
     local native = {}
@@ -128,14 +129,14 @@ function TB.Snapshot()
         if number(treeID) and treeID==1223 then nativeValeera=true end
     end
     if visibleOther or (not visibleValeera and not nativeValeera and faction~=2744) then
-        result.error="Hier ist ein anderer Begleiter aktiv. Dieser Berater ist für Valeera."; return result
+        result.error=L["Hier ist ein anderer Begleiter aktiv. Dieser Berater ist für Valeera."]; return result
     end
     result.companion = companion
     local useNative=shown and (visibleValeera or nativeValeera)
     local tree = useNative and 1223 or TB.Call(C_DelvesUI,"GetTraitTreeForCompanion",companion)
     result.config = (useNative and nativeConfig) or (tree and TB.Call(C_Traits,"GetConfigIDByTreeID",tree))
-    result.source=useNative and "Valeera-Fenster" or "Begleiter-API"
-    if not number(result.config) then result.error="Valeeras Einstellungen laden noch. Öffne ihre Begleitervorräte."; return result end
+    result.source=useNative and L["Valeera-Fenster"] or L["Begleiter-API"]
+    if not number(result.config) then result.error=L["Valeeras Einstellungen laden noch. Öffne ihre Begleitervorräte."]; return result end
     local ranks = TB.Call(C_GossipInfo, "GetFriendshipReputationRanks", 2744)
     result.level = record(ranks) and number(ranks.currentLevel) and ranks.currentLevel or nil
     local types = Enum and Enum.CurioType or {Combat=0, Utility=1}
@@ -188,16 +189,16 @@ function TB.Snapshot()
         end
     end
     if not result.slots.role or not result.slots.poison or not result.slots.combat or not result.slots.utility then
-        result.error="Valeeras Auswahl lädt noch. Öffne die Begleitervorräte und klicke „Valeera neu einlesen“."
+        result.error=L["Valeeras Auswahl lädt noch. Öffne die Begleitervorräte und klicke „Valeera neu einlesen“."]
     end
     return result
 end
 
 function TB.OpenCompanion()
     if not TB.active or not TB.Context().inside then return end
-    if TB.InCombat() then TB.Message("Öffne Valeera nach dem Kampf."); return end
+    if TB.InCombat() then TB.Message(L["Öffne Valeera nach dem Kampf."]); return end
     if C_AddOns and C_AddOns.LoadAddOn then C_AddOns.LoadAddOn("Blizzard_DelvesCompanionConfiguration") end
     local frame = _G.DelvesCompanionConfigurationFrame
     local opened = frame and type(ShowUIPanel)=="function" and TB.Foreign(frame,function(f) ShowUIPanel(f) end)
-    if not opened then TB.Message("Klicke die Begleitervorräte in der Tiefe an.") end
+    if not opened then TB.Message(L["Klicke die Begleitervorräte in der Tiefe an."]) end
 end

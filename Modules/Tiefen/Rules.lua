@@ -1,26 +1,27 @@
 local _, Buddy = ...
+local L = Buddy.L
 local TB = Buddy.Tiefen
 TB.order = {"role", "poison", "combat", "utility"}
-TB.labels = {role="Kampfrolle", poison="Gift", combat="Kampfkuriosität", utility="Unterstützung"}
-TB.styles = {relaxed="Entspannt", safe="Sicher", fast="Tempo"}
+TB.labels = {role=L["Kampfrolle"], poison=L["Gift"], combat=L["Kampfkuriosität"], utility=L["Unterstützung"]}
+TB.styles = {relaxed=L["Entspannt"], safe=L["Sicher"], fast=L["Tempo"]}
 TB.catalog = {
-    idol = {name="Viperwindgötze", names={"Viperwindgötze", "Viperwindidol", "Viperwind-Idol", "Viperwind Idol"}, spells={1288795,1314568}},
-    spear = {name="Ätzender Gallenspeer", names={"Ätzender Gallenspeer", "Corrosive Bilespear"}, spells={1248877,1305643}},
-    dundun = {name="Dunduns Gunst", names={"Dunduns Gunst", "Dundun's Favor", "Dundun’s Favor"}},
-    dream = {name="Seelenknackender Traumfänger", names={"Seelenknackender Traumfänger", "Soul-Cracking Dreamcatcher"}, spells={1248898,1248939}},
-    totem = {name="Staubiges Loatotem", names={"Staubiges Loatotem", "Staubiges Loa-Totem", "Dusty Loa Totem"}, spells={1288801,1314974,1314978}},
-    frost = {name="Frostherzgift", names={"Frostherzgift", "Frostheart Venom", "Frostheart Poison"}, spells={1298137}},
-    toad = {name="Aufplatzendes Krötengift", names={"Aufplatzendes Krötengift", "Bursting Toad Toxin", "Bursting Toad Poison"}, spells={1305904,1305906,1306740}},
-    blood = {name="Toxin der Blutgruft", names={"Toxin der Blutgruft", "Bloodcrypt Toxin", "Blood Crypt Toxin"}, spells={1251111,1251113}},
-    master = {name="Gift des vergessenen Meisters", names={"Gift des vergessenen Meisters", "Poison of the Forgotten Master"}},
+    idol = {name=L["Viperwindgötze"], names={"Viperwindgötze", "Viperwindidol", "Viperwind-Idol", "Viperwind Idol"}, spells={1288795,1314568}},
+    spear = {name=L["Ätzender Gallenspeer"], names={"Ätzender Gallenspeer", "Corrosive Bilespear"}, spells={1248877,1305643}},
+    dundun = {name=L["Dunduns Gunst"], names={"Dunduns Gunst", "Dundun's Favor", "Dundun’s Favor"}},
+    dream = {name=L["Seelenknackender Traumfänger"], names={"Seelenknackender Traumfänger", "Soul-Cracking Dreamcatcher"}, spells={1248898,1248939}},
+    totem = {name=L["Staubiges Loatotem"], names={"Staubiges Loatotem", "Staubiges Loa-Totem", "Dusty Loa Totem"}, spells={1288801,1314974,1314978}},
+    frost = {name=L["Frostherzgift"], names={"Frostherzgift", "Frostheart Venom", "Frostheart Poison"}, spells={1298137}},
+    toad = {name=L["Aufplatzendes Krötengift"], names={"Aufplatzendes Krötengift", "Bursting Toad Toxin", "Bursting Toad Poison"}, spells={1305904,1305906,1306740}},
+    blood = {name=L["Toxin der Blutgruft"], names={"Toxin der Blutgruft", "Bloodcrypt Toxin", "Blood Crypt Toxin"}, spells={1251111,1251113}},
+    master = {name=L["Gift des vergessenen Meisters"], names={"Gift des vergessenen Meisters", "Poison of the Forgotten Master"}},
 }
-TB.roleNames = {HEALER="Heiler", TANK="Tank", DAMAGER="Schaden"}
+TB.roleNames = {HEALER=L["Heiler"], TANK="Tank", DAMAGER=L["Schaden"]}
 -- Class-specific guidance is deliberately limited to the user's Hunter specs.
 -- Other classes use explicit role-based presets, not claimed spec simulations.
 TB.hunters = {
-    [253] = "Dein Tier bindet Gegner; Valeera hält dich als Heilerin stabil.",
-    [254] = "Heilerin für ruhige Solorunden. Ohne tankendes Tier ist Tank-Valeera eine Alternative.",
-    [255] = "Als Nahkämpfer profitierst du von Heilung und gebremsten Gegnern.",
+    [253] = L["Dein Tier bindet Gegner; Valeera hält dich als Heilerin stabil."],
+    [254] = L["Heilerin für ruhige Solorunden. Ohne tankendes Tier ist Tank-Valeera eine Alternative."],
+    [255] = L["Als Nahkämpfer profitierst du von Heilung und gebremsten Gegnern."],
 }
 
 local replacements={["Ä"]="ae",["ä"]="ae",["Ö"]="oe",["ö"]="oe",["Ü"]="ue",["ü"]="ue",["ß"]="ss",["’"]=""}
@@ -61,9 +62,9 @@ function TB.Preset(player, style)
     local role = player.role == "HEALER" and "TANK" or "HEALER"
     if player.role == "TANK" and not safe then role = "DAMAGER" end
     local reason = TB.hunters[player.spec]
-        or (player.role == "HEALER" and "Du heilst, Valeera bindet die Gegner als Tank.")
-        or (player.role == "TANK" and (safe and "Zusätzliche Heilung für vorsichtige Runden." or "Du tankst, Valeera ergänzt Schaden."))
-        or "Heilung als Ausgangspunkt für entspannte Solorunden."
+        or (player.role == "HEALER" and L["Du heilst, Valeera bindet die Gegner als Tank."])
+        or (player.role == "TANK" and (safe and L["Zusätzliche Heilung für vorsichtige Runden."] or L["Du tankst, Valeera ergänzt Schaden."]))
+        or L["Heilung als Ausgangspunkt für entspannte Solorunden."]
     return {
         role={role},
         poison=safe and {"frost", "blood"} or fast and {"toad", "master", "blood"} or {"frost", "blood", "toad"},
@@ -74,7 +75,7 @@ function TB.Preset(player, style)
 end
 
 function TB.Name(key)
-    return TB.roleNames[key] or (TB.catalog[key] and TB.catalog[key].name) or "Noch nicht erkannt"
+    return TB.roleNames[key] or (TB.catalog[key] and TB.catalog[key].name) or L["Noch nicht erkannt"]
 end
 
 function TB.Recommend(player, style, snapshot)

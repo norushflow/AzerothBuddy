@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.7
+
+- Deutsche und englische Sprachdateien mit gemeinsamer Codebasis; `enUS`/`enGB` und Englisch als Fallback für weitere Sprachen.
+- Die Zentrale schließt beim Aufrufen eines Moduls; Aktionsleisten behalten das Menü offen.
+- Englische Aliasse `relaxed`, `safe` und `fast` für die Valeera-Befehle.
+
 ## 1.0.6
 
 - CurseForge-Projekt-ID und Paketkonfiguration ergänzt.

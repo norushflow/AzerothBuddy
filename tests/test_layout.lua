@@ -1,3 +1,4 @@
+local loadfile = dofile("tests/load_locales.lua")
 local function frame(l,r,t,b,scale)
  local f={l=l,r=r,t=t,b=b,scale=scale or 1,children={},shown=true}
  function f:GetWidth() return self.r-self.l end
