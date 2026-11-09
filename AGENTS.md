@@ -18,3 +18,9 @@ Beginne bei `Core.lua`, `Initialize.lua` und dem betroffenen Verzeichnis in `Mod
 - Bei Verhaltensänderungen die README knapp ergänzen. Die Version erst für einen beauftragten Release anpassen. TOC, vorhandene interne Versionsmeldungen und README-Kopf abgleichen. Historische Einträge erhalten.
 - `./tools/package.sh` erzeugt nach grüner Prüfung ein lokales Installations-ZIP unter `dist/`. Für beauftragte Releases löst ein zur TOC passender Versions-Tag die automatische Veröffentlichung aus.
 - Das WowUp-ZIP enthält nur Addon-Dateien, Medien und Lizenz- oder Herkunftshinweise. `AGENTS.md`, KI-Übergaben, Entwicklerdokumentation, Tests, GitHub-Workflows, Backups, SavedVariables und Zugangsdaten gehören nicht hinein.
+
+## Veröffentlichungsziel
+
+- Das öffentliche Repository `norushflow/AzerothBuddy` ist das freigegebene Upload- und Releaseziel.
+- Ein ausdrücklicher Releaseauftrag erlaubt Commit, Push und den zur TOC passenden Versions-Tag. Ohne Release- oder Pushauftrag nur lokal vorbereiten.
+- Nur dieses Addon veröffentlichen; Sammelordner, lokale Archive und SavedVariables bleiben lokal.
