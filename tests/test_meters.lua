@@ -19,7 +19,9 @@ function methods:Hide() self.shown=false end
 function methods:Show() self.shown=true end
 function methods:IsShown() return self.shown end
 function methods:SetPoint(...) self.point={...} end
+function methods:SetSize(width,height) self.width,self.height=width,height end
 function methods:SetMinMaxValues(a,b) self.minimum=a;self.maximum=b end
+function methods:SetStatusBarTexture(texture) self.texture=texture end
 function methods:SetValue(v) self.value=v end
 local object
 function methods:CreateTexture() return object() end
@@ -66,6 +68,12 @@ M.Toggle();drain()
 assert(M.db.active and not enabled and #M.windows==2 and reads==2,'activation uses two independent API views')
 assert(M.windows[1].point[4]==-272 and M.windows[2].point[4]==-2,'left damage, right healing')
 assert(#M.windows[1].rows==5 and #M.windows[2].rows==5,'five visible rows per window')
+for _,window in ipairs(M.windows) do
+    assert(window.rows[1].texture=="Interface\\Buttons\\WHITE8X8",'restore the flat meter texture')
+    assert(window.title.point[3]==-5 and window.segment.point[3]==-4 and window.segment.height==16,
+        'title and switch sit within the 21-point metal strip')
+    assert(window.height+window.rows[1].point[3]==166,'compacting the header preserves the bar positions')
+end
 local row=M.windows[1].rows[1]
 assert(rawequal(row.maximum,secret) and rawequal(row.value,secret),'secret bar values passed through')
 assert(rawequal(row.name.text,secret) and rawequal(row.amount.value,secret) and rawequal(row.rate.value,secret),'secret text passed directly to widgets')

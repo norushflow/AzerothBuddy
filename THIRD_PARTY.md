@@ -13,3 +13,7 @@ Ideengeber für eigene Fenster mit Blizzards Schadensdaten. Die Umsetzung ist ei
 Blizzards UI-Schnittstellen dienen als technische Referenz. Keine Blizzard-Dateien werden mitgeliefert. WoW und seine Spielinhalte gehören ihren jeweiligen Rechteinhabern.
 
 Der Valeera-Guide von Icy Veins diente als inhaltliche Orientierung für Standard-Kuriositäten. Kein Guide-Text wurde übernommen.
+
+## Expressway
+
+Expressway ist eine Schrift von Typodermic Fonts. Die bisher als `Media/MORPHEUS.TTF` abgelegte Datei enthielt Expressway Bold mit einem Weitergabeverbot und wurde aus dem Paket entfernt. Das Addon unterstützt eine für den Einsatz im Spiel lizenzierte lokale Datei und liefert keine Expressway-Datei mit. [Lizenzinformationen von Typodermic](https://typodermicfonts.com/license/).

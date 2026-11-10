@@ -17,10 +17,10 @@ function Buddy.Foreign(frame, action)
         return action(frame)
     end)
 end
-function Buddy.HideTooltip()
-    Buddy.Foreign(GameTooltip, function(tooltip) tooltip:Hide() end)
+function Buddy.Message(text)
+    local style=Buddy.Style
+    print(style.Hex(style.Color.gold).."AzerothBuddy:|r "..text)
 end
-function Buddy.Message(text) print("|cffffd100AzerothBuddy:|r " .. text) end
 function Buddy.OpenModule(module)
     if module.key ~= "bars" and Buddy.panel then Buddy.panel:Hide() end
     if not Buddy.loaded[module.key] then Buddy.Message(L["Modul aktivieren und die Oberfläche neu laden."]); return end
@@ -37,11 +37,12 @@ function Buddy.OpenModule(module)
 end
 function Buddy.Toggle()
     if not Buddy.panel then
+        local style = Buddy.Style
         local panel = CreateFrame("Frame", "AzerothBuddyPanel", UIParent, "BackdropTemplate")
         Buddy.panel = panel
         local barsMenu = Buddy.loaded.bars and Buddy.Bars and Buddy.Bars.BuildMenu
-        local barsExtra = barsMenu and (Buddy.Bars.MENU_HEIGHT + 24) or 0
-        panel:SetSize(390, 158 + #Buddy.modules * 43 + barsExtra)
+        local baseHeight = 158 + #Buddy.modules * 43
+        panel:SetSize(390, baseHeight)
         panel:SetPoint("CENTER")
         panel:SetFrameStrata("DIALOG")
         panel:SetClampedToScreen(true)
@@ -50,26 +51,24 @@ function Buddy.Toggle()
         panel:RegisterForDrag("LeftButton")
         panel:SetScript("OnDragStart", panel.StartMoving)
         panel:SetScript("OnDragStop", panel.StopMovingOrSizing)
-        Buddy.Style.Window(panel,72)
-        local icon = panel:CreateTexture(nil,"ARTWORK")
-        icon:SetTexture("Interface\\AddOns\\AzerothBuddy\\Media\\BuddyIcon")
-        icon:SetSize(42,42); icon:SetPoint("TOPLEFT",16,-15)
-        local title = panel:CreateFontString(nil,"OVERLAY","GameFontNormalLarge")
-        title:SetPoint("TOPLEFT",68,-21); title:SetText("AzerothBuddy")
-        local sub = panel:CreateFontString(nil,"OVERLAY","GameFontHighlightSmall")
-        sub:SetPoint("TOPLEFT",68,-44); sub:SetText(L["Dein Begleiter durch Azeroth"])
-        local close = CreateFrame("Button",nil,panel,"UIPanelCloseButton")
+        style.Window(panel,66)
+        local title = style.Text(panel,"title")
+        title:SetPoint("TOPLEFT",style.Spacing.panel,-25); title:SetText("AzerothBuddy")
+        local sub = style.Text(panel,"small",style.Color.muted)
+        sub:SetPoint("TOPLEFT",style.Spacing.panel,-44); sub:SetText(L["Dein Begleiter durch Azeroth"])
+        local close = style.Close(CreateFrame("Button",nil,panel,"UIPanelCloseButton"))
         close:SetPoint("TOPRIGHT",-3,-3)
         for index,module in ipairs(Buddy.modules) do
             local entry = module
             local check = CreateFrame("CheckButton",nil,panel,"UICheckButtonTemplate")
+            style.Check(check)
             check:SetSize(28,28); check:SetPoint("TOPLEFT",19,-76-(index-1)*43)
             check:SetChecked(Buddy.db.enabled[entry.key])
             check:SetScript("OnClick",function(self)
                 Buddy.db.enabled[entry.key] = self:GetChecked() and true or false
                 Buddy.Message(L["Modulauswahl gespeichert. Mit /reload anwenden."])
             end)
-            local button = Buddy.Style.Button(CreateFrame("Button",nil,panel,"UIPanelButtonTemplate"))
+            local button = style.Button(CreateFrame("Button",nil,panel,"UIPanelButtonTemplate"))
             button:SetSize(312,30); button:SetPoint("TOPLEFT",55,-76-(index-1)*43)
             if entry.key=="bars" then
                 if Buddy.loaded.bars and Buddy.Bars then Buddy.Bars.menuButton=button end
@@ -82,14 +81,28 @@ function Buddy.Toggle()
             end
         end
         local hintTop = -83-#Buddy.modules*43
-        if barsMenu then
-            Buddy.Bars.BuildMenu(panel,hintTop)
-            hintTop = hintTop - (Buddy.Bars.MENU_HEIGHT + 10)
-        end
-        local hint = panel:CreateFontString(nil,"OVERLAY","GameFontDisableSmall")
-        hint:SetPoint("TOPLEFT",22,hintTop); hint:SetWidth(346)
+        local hint = style.Text(panel,"small",style.Color.muted)
+        hint:SetWidth(346)
+        hint:SetJustifyH("LEFT")
+        hint:SetWordWrap(true)
         hint:SetText(L["Häkchen: Modul beim Start laden. Änderungen mit /reload anwenden. Tiefenberater nur innerhalb einer Tiefe. Aktionsleisten-Vorlagen gelten je Klasse und Spezialisierung."])
-        local reload = Buddy.Style.Button(CreateFrame("Button",nil,panel,"UIPanelButtonTemplate"))
+        local hintGap = 16
+        local function fitFooter(menuHeight)
+            local hintBottom = -hintTop + (menuHeight > 0 and menuHeight + hintGap or 0)
+                + (hint:GetStringHeight() or 0)
+            local minimum = baseHeight + (menuHeight > 0 and menuHeight + 24 or 0)
+            -- Keep eight points between the text and the 36-point reload area.
+            panel:SetHeight(math.max(minimum, math.ceil(hintBottom + 44)))
+        end
+        if barsMenu then
+            local height = Buddy.Bars.BuildMenu(panel,hintTop,fitFooter)
+            hint:SetPoint("TOPLEFT",Buddy.Bars.menu,"BOTTOMLEFT",0,-hintGap)
+            fitFooter(height)
+        else
+            hint:SetPoint("TOPLEFT",22,hintTop)
+            fitFooter(0)
+        end
+        local reload = style.Button(CreateFrame("Button",nil,panel,"UIPanelButtonTemplate"))
         reload:SetSize(200,24); reload:SetPoint("BOTTOM",0,12)
         reload:SetText(L["Oberfläche neu laden"])
         reload:SetScript("OnClick",function()
@@ -100,10 +113,16 @@ function Buddy.Toggle()
     else Buddy.panel:SetShown(not Buddy.panel:IsShown()) end
 end
 function Buddy.CreateMinimap()
+    local style = Buddy.Style
     local button = CreateFrame("Button","AzerothBuddyMinimapButton",Minimap)
     button:SetSize(32,32); button:SetFrameStrata("MEDIUM")
     local icon = button:CreateTexture(nil,"ARTWORK")
-    icon:SetAllPoints(); icon:SetTexture("Interface\\AddOns\\AzerothBuddy\\Media\\BuddyIcon")
+    icon:SetPoint("TOPLEFT",3,-3); icon:SetPoint("BOTTOMRIGHT",-3,3)
+    icon:SetTexture("Interface\\AddOns\\AzerothBuddy\\Media\\BuddyIcon")
+    local ring = button:CreateTexture(nil,"OVERLAY")
+    ring:SetSize(52,52); ring:SetPoint("TOPLEFT",0,0)
+    ring:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
+    ring:SetVertexColor(unpack(style.Color.gold))
     button:SetHighlightTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight")
     local function place()
         Buddy.Foreign(Minimap, function(map)
@@ -137,16 +156,17 @@ function Buddy.CreateMinimap()
     end)
     button:SetScript("OnDragStop",function(self) self:SetScript("OnUpdate",nil) end)
     button:SetScript("OnEnter",function(self)
-        Buddy.Foreign(GameTooltip, function()
-        GameTooltip:SetOwner(self,"ANCHOR_LEFT")
-        GameTooltip:AddLine("AzerothBuddy",1,.82,.38)
-        GameTooltip:AddLine(L["Linksklick: Zentrale"],1,1,1)
-        GameTooltip:AddLine(L["Rechtsklick: Charaktere"],1,1,1)
-        GameTooltip:AddLine(L["Ziehen: Position ändern"],.7,.7,.7)
-        GameTooltip:Show()
-        end)
+        local tooltip = style.Tooltip(self,"ANCHOR_LEFT")
+        if not tooltip then return end
+        local color = style.Color
+        tooltip:AddLine("AzerothBuddy",unpack(color.gold,1,3))
+        tooltip:AddLine(L["Linksklick: Zentrale"],unpack(color.text,1,3))
+        tooltip:AddLine(L["Rechtsklick: Charaktere"],unpack(color.text,1,3))
+        tooltip:AddLine(L["Ziehen: Position ändern"],unpack(color.muted,1,3))
+        tooltip:Show()
     end)
-    button:SetScript("OnLeave",Buddy.HideTooltip)
+    button:SetScript("OnLeave",style.HideTooltip)
+    button:SetScript("OnHide",style.HideTooltip)
     place()
 end
 

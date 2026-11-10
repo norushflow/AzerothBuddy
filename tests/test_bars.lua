@@ -28,6 +28,7 @@ function methods:Hide() self.shown=false end
 function methods:SetText(v) self.text=v end
 function methods:GetText() return self.text end
 function methods:SetSize(w,h) self.width=w;self.height=h end
+function methods:SetHeight(h) self.height=h end
 function methods:SetWidth(v) self.width=v end
 function methods:SetPoint(...) self.points[#self.points+1]={...} end
 function methods:SetJustifyH(v) self.justify=v end
@@ -37,6 +38,15 @@ function methods:GetWidth() return self.width or 100 end
 function methods:GetHeight() return self.height or 24 end
 function methods:CreateTexture() return setmetatable({scripts={},events={},points={},shown=true},{__index=function(_,k) return methods[k] or function() end end}) end
 function methods:CreateFontString() return setmetatable({scripts={},events={},points={},shown=true},{__index=function(_,k) return methods[k] or function() end end}) end
+function methods:GetStringHeight() return rawget(self,"stringHeight") or 11 end
+for _,state in ipairs({"Normal","Pushed","Disabled"}) do
+    methods["Set"..state.."Atlas"]=function(self,atlas)
+        local texture=self:CreateTexture()
+        texture.atlas=atlas
+        self[state]=texture
+    end
+    methods["Get"..state.."Texture"]=function(self) return self[state] end
+end
 local frames={}
 local function object()
     local f=setmetatable({scripts={},events={},points={},shown=true},{__index=function(_,k) return methods[k] or function() end end})
@@ -315,7 +325,7 @@ fire('PLAYER_SPECIALIZATION_CHANGED','player');drain()
 assert(B.spec==2544 and bar[1].value==100,'returning to a specialization loads its profile')
 
 -- Automatik aus: keine automatischen Schreibläufe; Einschalten lädt erneut.
-B.menuButton=object()
+B.menuButton=Buddy.Style.Button(object())
 B.SetAutomatic(false)
 assert(B.menuButton.text=='Aktionsleisten · Automatik AUS','menu row reflects state')
 now=now+5
@@ -327,16 +337,29 @@ assert(B.menuButton.text=='Aktionsleisten · Automatik AN' and bar[1].value==100
     'enabling automatic mode reloads the profile')
 
 -- Menübereich im bestehenden Fenster.
-local menuHeight=B.BuildMenu(object(),-100)
+local footerHeight
+local menuHeight=B.BuildMenu(object(),-100,function(height) footerHeight=height end)
 assert(menuHeight==B.MENU_HEIGHT and B.menuStatus.text:find('Automatik AN')
     and B.menuStatus.text:find('Überleben'),'inline menu shows state and specialization')
 assert(B.menuNote.text==B.note,'inline menu shows the last note')
+assert(B.menuNote.points[1][2]==B.menuStatus and B.menuNote.points[1][3]=='BOTTOMLEFT')
+B.menuStatus.stringHeight,B.menuNote.stringHeight=22,22
+B.RefreshMenu()
+assert(B.menu.height==116 and footerHeight==116,'wrapped status and description make room above the buttons')
+B.menuStatus.stringHeight,B.menuNote.stringHeight=nil,nil
+B.RefreshMenu()
+assert(B.menu.height==B.MENU_HEIGHT and footerHeight==B.MENU_HEIGHT,'one-line text keeps the original height')
 local saveButton,loadButton
 for _,frame in ipairs(frames) do
     if frame.text=='Vorlage speichern' then saveButton=frame end
     if frame.text=='Vorlage laden' then loadButton=frame end
 end
 assert(saveButton and loadButton,'both inline buttons exist')
+for _,button in ipairs({saveButton,loadButton}) do
+    for _,state in ipairs({"Normal","Pushed","Disabled"}) do
+        assert(button[state].atlas=='UI-HUD-CoolDownManager-Bar')
+    end
+end
 -- Kommandos
 messages={}
 SlashCmdList.AZEROTHBUDDYBARS('status')

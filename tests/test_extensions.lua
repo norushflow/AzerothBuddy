@@ -26,6 +26,9 @@ function methods:IsShown() return self.shown end
 function methods:SetShown(v) self.shown=v end
 function methods:Show() self.shown=true end
 function methods:Hide() self.shown=false;if self.scripts.OnHide then self.scripts.OnHide(self) end end
+function methods:SetOwner(owner) self.owner=owner end
+function methods:IsOwned(owner) return rawget(self,'owner')==owner end
+function methods:SetHyperlink(link) self.link=link end
 function methods:SetText(v) self.text=v end
 function methods:SetChecked(v) self.checked=v end
 function methods:GetChecked() return self.checked end
@@ -102,6 +105,18 @@ local before=reads;T.Toggle();drain()
 assert(reads-before==4,'class lookup only on opening')
 local lines=T.BuildLines()
 assert(#lines==4 and lines[1].heading:find('Krieger') and lines[3].heading:find('Paladin'),'missing helm in both class groups')
+local itemRow=T.rows[2]
+itemRow.scripts.OnEnter(itemRow)
+assert(GameTooltip:IsShown() and GameTooltip:IsOwned(itemRow) and GameTooltip.link=='item:3','item hover retains native comparison tooltip')
+GameTooltip:SetOwner(UIParent)
+itemRow.scripts.OnLeave(itemRow)
+assert(GameTooltip:IsShown(),'a row does not hide another owner’s tooltip')
+itemRow.scripts.OnEnter(itemRow)
+combat=true
+T.events.scripts.OnEvent(nil,'PLAYER_REGEN_DISABLED')
+itemRow.scripts.OnEnter(itemRow)
+assert(not GameTooltip:IsShown(),'combat hides and blocks the item tooltip')
+combat=false
 T.Toggle();T.Toggle();drain();assert(reads-before==4,'reuse class cache')
 assert(T.panel.level==100 and T.panel.strata=='DIALOG')
 combat=true;before=reads;T.Update();drain();assert(reads==before,'no combat reads')

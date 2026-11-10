@@ -1,4 +1,4 @@
-# AzerothBuddy 1.0.8
+# AzerothBuddy 1.1.0
 
 <p align="center"><img src="branding/icon-400.png" alt="AzerothBuddy" width="160" height="160"></p>
 
@@ -25,6 +25,10 @@ Die Spielsprache bestimmt die Texte: Deutsch (`deDE`), Englisch (`enUS`, `enGB`)
 Das Installations-ZIP unter [Releases](https://github.com/norushflow/AzerothBuddy/releases) herunterladen und den enthaltenen Ordner `AzerothBuddy` in `Interface/AddOns/` des passenden Spielclients entpacken. Die Datei `AzerothBuddy.toc` muss direkt in diesem Ordner liegen. Anschließend im Spiel aktivieren und `/reload` ausführen.
 
 Für WowUp die [Repository-Adresse](https://github.com/norushflow/AzerothBuddy) importieren und den passenden Spielclient wählen.
+
+## Schrift
+
+Eine für den Einsatz im Spiel lizenzierte Expressway-Regular-Datei im TrueType-Format kann lokal unter `AzerothBuddy/Media/Expressway.ttf` im installierten Addon abgelegt werden. Nach einem Neustart verwendet AzerothBuddy sie für eigene Texte. Ohne verwendbare Datei sowie im koreanischen und chinesischen Client greift das Addon auf die Schrift des Clients zurück. [Lizenzinformationen von Typodermic](https://typodermicfonts.com/license/).
 
 ## Bedienung
 

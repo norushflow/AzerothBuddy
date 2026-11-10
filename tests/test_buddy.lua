@@ -13,8 +13,16 @@ function methods:IsShown() return self.shown end
 function methods:SetFrameLevel(v) self.frameLevel=v end
 function methods:SetFrameStrata(v) self.frameStrata=v end
 function methods:SetText(v) self.text=v end
+function methods:SetPoint(point,...)
+ self.point={point,...};self.points[point]=self.point
+end
+function methods:GetStringHeight() return self.text:find('Häkchen:',1,true) and 56 or 11 end
 function methods:SetChecked(v) self.checked=v end
 function methods:GetChecked() return self.checked end
+function methods:SetOwner(owner) self.tooltipOwner=owner end
+function methods:GetOwner() return rawget(self,'tooltipOwner') end
+function methods:ClearLines() self.lines={} end
+function methods:AddLine(line) self.lines[#self.lines+1]=line end
 function methods:GetWidth() return 140 end
 function methods:GetHeight() return 140 end
 function methods:GetEffectiveScale() return 1 end
@@ -24,14 +32,25 @@ function methods:GetFontString() self.fontString=rawget(self,"fontString") or ob
 function methods:SetHeight(v) self.height=v end
 function methods:SetSize(w,h) self.width=w;self.height=h end
 object = function()
- return setmetatable({events={},scripts={},shown=true},{__index=function(_,k) return methods[k] or function() end end})
+ return setmetatable({events={},scripts={},points={},textures={},shown=true},{__index=function(_,k) return methods[k] or function() end end})
 end
 function CreateFrame(_,name)
  local f=object();frames[#frames+1]=f;if name then _G[name]=f end;return f
 end
-function methods:CreateTexture() return object() end
-function methods:CreateFontString() return object() end
+function methods:CreateTexture()
+ local texture=object();self.textures[#self.textures+1]=texture;return texture
+end
+function methods:CreateFontString()
+ local font=object();font.parent=self;frames[#frames+1]=font;return font
+end
+for _,state in ipairs({"Normal","Pushed","Disabled"}) do
+ methods["Set"..state.."Atlas"]=function(self,atlas)
+  self[state]=self:CreateTexture();self[state].atlas=atlas
+ end
+ methods["Get"..state.."Texture"]=function(self) return self[state] end
+end
 UIParent=object();Minimap=object();GameTooltip=object();UISpecialFrames={};SlashCmdList={}
+NineSliceUtil={ApplyLayoutByName=function(frame, layout) frame.sliceLayout=layout end}
 local tickers={}
 local afterCalls=0
 STANDARD_TEXT_FONT='font';C_Timer={After=function() afterCalls=afterCalls+1 end,NewTicker=function(_,fn) tickers[#tickers+1]=fn;return {Cancel=function() end} end}
@@ -82,6 +101,26 @@ Buddy.OpenModule=originalOpen
 init.scripts.OnEvent(init,'PLAYER_LOGIN')
 assert(AzerothBuddyMinimapButton and not AltMiniMinimapButton)
 AzerothBuddyMinimapButton.scripts.OnClick(AzerothBuddyMinimapButton,'LeftButton');assert(Buddy.panel:IsShown())
+local hint, title, nameplateButtons
+nameplateButtons=0
+for _,frame in ipairs(frames) do
+ if rawget(frame,'parent')==Buddy.panel and type(frame.text)=='string' and frame.text:find('Häkchen:',1,true) then hint=frame end
+ if rawget(frame,'parent')==Buddy.panel and frame.text=='AzerothBuddy' then title=frame end
+ if rawget(frame,'Normal') then
+  assert(frame.Normal.atlas=='UI-HUD-CoolDownManager-Bar')
+  nameplateButtons=nameplateButtons+1
+ end
+end
+assert(nameplateButtons==9,'use the nameplate atlas on the nine central buttons')
+assert(title and title.point[2]==Buddy.Style.Spacing.panel and title.point[3]==-25,
+    'main title aligns to the panel inset below the metal strip')
+assert(hint and hint.point[2]==Buddy.Bars.menu and hint.point[3]=='BOTTOMLEFT' and hint.point[5]==-16)
+assert(Buddy.panel.height==553,'a longer help text leaves space for the reload button')
+assert(Buddy.panel.sliceLayout=='ButtonFrameTemplateNoPortrait')
+for _,background in ipairs({Buddy.panel.textures[1],Buddy.panel.textures[2]}) do
+ local top,bottom=background.points.TOPLEFT,background.points.BOTTOMRIGHT
+ assert(top[4]==6 and top[5]==-21 and bottom[4]==-2 and bottom[5]==2,'keep the rock and tint inside the native frame')
+end
 SlashCmdList.AZEROTHBUDDY('');assert(not Buddy.panel:IsShown())
 -- Character UI regression: compact sizing, filters, sorting and tab transitions.
 function UnitFullName() return 'Buddy','Realm' end
@@ -100,6 +139,7 @@ LOCALIZED_CLASS_NAMES_MALE={HUNTER='Jäger',MAGE='Magier',EVOKER='Rufer'}
 SlashCmdList.ALTM()
 local characters=AzerothBuddyCharactersFrame
 assert(characters:IsShown() and characters.height==420,'compact character view')
+assert(characters.tab1.Normal.atlas=='UI-HUD-CoolDownManager-Bar','all panel buttons use the brown atlas by default')
 assert(characters.rows[1].cells[3].text=='Jäger','localized class label')
 local snapshot=Buddy.db.characters.chars['Realm-Buddy']
 assert(xpReads==1 and restedReads==1,'read XP and rested XP once per character snapshot')
@@ -185,13 +225,18 @@ for _,row in ipairs(characters.rows) do
 end
 assert(found and offline.rested_xp==0,'estimate must not overwrite snapshot')
 time=originalTime
--- Zentrale Tooltip-Hilfe überspringt nicht zugängliche Blizzard-Frames.
-local oldHide=GameTooltip.Hide
-GameTooltip.IsForbidden=function() return true end
-GameTooltip.Hide=function() error('forbidden tooltip touched') end
-assert(pcall(Buddy.HideTooltip))
-GameTooltip.IsForbidden=function() return false end;GameTooltip.Hide=oldHide
-print('PASS: zero-rested offline estimate and shared tooltip guard')
+-- Ein eigener Tooltip bleibt sichtbar, bis sein tatsächlicher Besitzer ihn schließt.
+local minimapButton=AzerothBuddyMinimapButton
+GameTooltip.Hide=function() error('Blizzard tooltip touched') end
+GameTooltip.SetOwner=function() error('Blizzard tooltip touched') end
+minimapButton.scripts.OnEnter(minimapButton)
+local tooltip=AzerothBuddyDesignTooltip
+assert(tooltip:IsShown() and tooltip:GetOwner()==minimapButton and #tooltip.lines==4)
+Buddy.Style.HideTooltip(characters)
+assert(tooltip:IsShown(),'unrelated frame closed the tooltip')
+minimapButton.scripts.OnLeave(minimapButton)
+assert(not tooltip:IsShown())
+print('PASS: zero-rested offline estimate and addon-owned tooltip')
 
 -- Reiner Valeera-Berater: bisherige Speicherdaten bleiben unangetastet/ungenutzt.
 local TB=Buddy.Tiefen

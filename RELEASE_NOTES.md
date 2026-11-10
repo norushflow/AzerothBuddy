@@ -1,4 +1,7 @@
-# v1.0.8
+# v1.1.0
 
-- Show all 13 classes in the character window’s Class Statistics tab without scrolling.
-- Reduce repeated character, Omnium and layout work.
+- Give the hub and module windows a shared Warcraft-style metal frame, brown buttons and consistent typography.
+- Keep the action bar template status and help text clear of the controls, including when text wraps.
+- Move the damage and healing titles and session switches into their metal header bars.
+- Style addon tooltips while retaining Blizzard's native item comparisons for dungeon transmog.
+- Use the client font by default and support an optional local installation of Expressway Regular.

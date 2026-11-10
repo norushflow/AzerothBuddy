@@ -9,3 +9,5 @@ Benötigt werden Bash und LuaJIT, für ZIPs zusätzlich zip und unzip. Die TOC d
 - Das ZIP enthält TOC-Dateien, geladene Lua-/XML-Dateien, Medien und Herkunftshinweise. CurseForge-Projekt-ID und Paketkonfiguration stehen in TOC und `.pkgmeta`.
 
 Vor einer Veröffentlichung Login, gespeicherte Einstellungen, Bedienung, Kampf, Gruppen/Raid und Taint im Zielclient prüfen.
+
+`Style.lua` ist in AzerothBuddy und AzerothBuddyUI identisch. Änderungen an Farben, Texturen, Schrift und gemeinsamen Steuerelementen in beide Kopien übernehmen. Expressway-Dateien für den persönlichen Gebrauch gehören in das installierte Addon.

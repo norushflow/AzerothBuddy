@@ -1,9 +1,10 @@
 local _, Buddy = ...
 local L = Buddy.L
 local TB = Buddy.Tiefen
-local GOLD, WHITE, GREY = "|cffffd100", "|cfff1eee6", "|cffaaa79f"
-local GREEN, AMBER = "|cff85d9a0", "|cffffb66b"
-local panel, title, context, explanation, status
+local Style = Buddy.Style
+local Color = Style.Color
+local GOLD, GREY, GREEN = Style.Hex(Color.gold), Style.Hex(Color.muted), Style.Hex(Color.success)
+local panel, context, explanation, status
 local rows, styleButtons
 local WIDTH, HEIGHT = 438, 578
 TB.buttons = {}
@@ -16,38 +17,34 @@ local function integer(value)
     if TB.Public(value) and type(value)=="number" then return value end
 end
 
-local function Label(parent, text, x, y, width, height, font)
-    local label = parent:CreateFontString(nil, "OVERLAY", font or "GameFontHighlight")
+local function Label(parent, text, x, y, width, height, role, color)
+    local label = Style.Text(parent, role, color)
     label:SetPoint("TOPLEFT", x, y)
     label:SetSize(width, height)
     label:SetJustifyH("LEFT"); label:SetJustifyV("TOP")
     label:SetWordWrap(true)
-    label:SetShadowColor(0,0,0,1); label:SetShadowOffset(1,-1)
     label:SetText(text or "")
     return label
 end
 
 local function Button(parent, text, x, y, width, action)
-    local button=CreateFrame("Button", nil, parent, text=="×" and "UIPanelCloseButton" or "UIPanelButtonTemplate")
-    if text~="×" then Buddy.Style.Button(button) end
+    local button=CreateFrame("Button", nil, parent, text and "UIPanelButtonTemplate" or "UIPanelCloseButton")
+    if text then
+        Style.Button(button)
+        button:SetText(text)
+    else
+        Style.Close(button)
+    end
     button:SetSize(width, 27); button:SetPoint("TOPLEFT", x, y)
-    local bg=button:CreateTexture(nil,"BACKGROUND"); bg:SetAllPoints(); bg:SetColorTexture(1,.8,.4,.07)
-    button.bg=bg
-    button.text=Label(button, text=="×" and "" or text, 6, -6, width-12, 18, "GameFontNormal")
     button:SetScript("OnClick", function() if not TB.InCombat() then action() end end)
     TB.buttons[#TB.buttons+1]=button
     return button
 end
 
-local function Line(parent, y)
-    local line=parent:CreateTexture(nil,"ARTWORK")
-    line:SetPoint("TOPLEFT",14,y); line:SetSize(WIDTH-28,1); line:SetColorTexture(.8,.7,.5,.2)
-end
-
 local function Tooltip(owner, option)
     if TB.InCombat() or not option or not option.spell then return end
-    Buddy.Foreign(GameTooltip, function(t)
-        t:SetOwner(owner,"ANCHOR_LEFT"); t:SetSpellByID(option.spell); t:Show()
+    Buddy.Foreign(Style.Tooltip(owner,"ANCHOR_LEFT"), function(t)
+        t:SetSpellByID(option.spell); t:Show()
     end)
 end
 
@@ -57,12 +54,11 @@ function TB.CreateUI()
     TB.panel=panel
     panel:SetSize(WIDTH,HEIGHT); panel:SetFrameStrata("MEDIUM"); panel:SetClampedToScreen(true)
     panel:SetMovable(true); panel:EnableMouse(true)
-    Buddy.Style.Window(panel)
-    local accent=panel:CreateTexture(nil,"ARTWORK"); accent:SetSize(3,34); accent:SetPoint("TOPLEFT",0,-14); accent:SetColorTexture(.95,.73,.3,.9)
-    title=Label(panel,GOLD..L["AzerothBuddy · Valeera|r"],16,-16,350,24,"GameFontNormalLarge")
-    context=Label(panel,"",16,-44,WIDTH-32,32,"GameFontHighlightSmall")
-    Button(panel,"×",WIDTH-36,-11,25,function() TB.visibility=false; panel:Hide() end)
-    local drag=CreateFrame("Frame",nil,panel); drag:SetPoint("TOPLEFT",0,0); drag:SetSize(WIDTH-42,42); drag:EnableMouse(true)
+    Style.Window(panel,78)
+    Label(panel,L["AzerothBuddy · Valeera"],16,-25,350,24,"title")
+    context=Label(panel,"",16,-51,WIDTH-32,26,"small")
+    Button(panel,nil,WIDTH-36,-11,25,function() TB.visibility=false; panel:Hide() end)
+    local drag=CreateFrame("Frame",nil,panel); drag:SetPoint("TOPLEFT",0,0); drag:SetSize(WIDTH-42,50); drag:EnableMouse(true)
     drag:RegisterForDrag("LeftButton")
     drag:SetScript("OnDragStart",function() if not TB.InCombat() and TB.db.unlocked then panel:StartMoving() end end)
     drag:SetScript("OnDragStop",function()
@@ -71,29 +67,28 @@ function TB.CreateUI()
         TB.db.position={point,relative,x,y}
     end)
     TB.drag=drag
-    Line(panel,-70)
     styleButtons={}
     for i,key in ipairs({"relaxed","safe","fast"}) do
         styleButtons[key]=Button(panel,TB.styles[key],14+(i-1)*137,-82,133,function() TB.SetStyle(key) end)
     end
-    explanation=Label(panel,"",16,-122,WIDTH-32,54,"GameFontHighlightSmall")
+    explanation=Label(panel,"",16,-122,WIDTH-32,54,"body",Color.muted)
     rows={}
     for i,slot in ipairs(TB.order) do
         local frame=CreateFrame("Frame",nil,panel)
         frame:SetPoint("TOPLEFT",14,-177-(i-1)*74); frame:SetSize(WIDTH-28,70)
-        local tint=frame:CreateTexture(nil,"BACKGROUND"); tint:SetAllPoints(); tint:SetColorTexture(1,1,1,.025)
-        frame.label=Label(frame,TB.labels[slot],9,-5,WIDTH-52,15,"GameFontDisableSmall")
-        frame.name=Label(frame,"",9,-22,WIDTH-52,21,"GameFontNormal")
-        frame.detail=Label(frame,"",9,-47,WIDTH-52,18,"GameFontHighlightSmall")
+        Style.Inset(frame)
+        frame.label=Label(frame,TB.labels[slot],10,-7,WIDTH-52,15,"small",Color.muted)
+        frame.name=Label(frame,"",10,-24,WIDTH-52,21,"heading")
+        frame.detail=Label(frame,"",10,-47,WIDTH-52,18,"small",Color.muted)
         frame:EnableMouse(true)
         frame:SetScript("OnEnter",function(self) Tooltip(self,self.option) end)
-        frame:SetScript("OnLeave",Buddy.HideTooltip)
+        frame:SetScript("OnLeave",Style.HideTooltip)
+        frame:SetScript("OnHide",Style.HideTooltip)
         rows[i]=frame
     end
     Button(panel,L["Neu einlesen"],14,-483,245,function() TB.Refresh() end)
     Button(panel,L["Valeera öffnen"],264,-483,160,function() TB.OpenCompanion() end)
-    status=Label(panel,"",16,-518,WIDTH-32,41,"GameFontHighlightSmall")
-    panel:SetScript("OnHide", Buddy.HideTooltip)
+    status=Label(panel,"",16,-518,WIDTH-32,41,"body",Color.muted)
     panel:Hide()
 end
 
@@ -113,36 +108,38 @@ function TB.CombatUI()
     local enabled=not TB.InCombat()
     Buddy.FadeTo(panel,enabled and TB.db.alpha or TB.db.combatAlpha)
     panel:EnableMouse(enabled); TB.drag:EnableMouse(enabled)
-    for _,b in ipairs(TB.buttons) do b:EnableMouse(enabled) end
-    for _,r in ipairs(rows) do r:EnableMouse(enabled) end
-    if not enabled then Buddy.HideTooltip() end
+    for _,b in ipairs(TB.buttons) do b:SetEnabled(enabled); b:EnableMouse(enabled) end
+    for _,r in ipairs(rows) do
+        r:EnableMouse(enabled)
+        if not enabled then Style.HideTooltip(r) end
+    end
 end
 
 function TB.Render()
     if not panel or not TB.player then return end
     local player,snapshot,recommendation=TB.player,TB.snapshot or {},TB.recommendation
-    title:SetText(GOLD .. L["AzerothBuddy · Valeera|r"])
     local className, playerName = plain(player.className), plain(player.name) or L["Unbekannt"]
     local level = integer(snapshot.level)
-    context:SetText(WHITE .. (className and className.." · " or "") .. playerName .. "|r\n" .. GREY
+    context:SetText((className and className.." · " or "") .. playerName .. "\n" .. GREY
         .. (level and L["Valeera · Stufe "]..level or L["Valeera · Begleitervorräte"]) .. "|r")
     local style=TB.style
-    for key,b in pairs(styleButtons) do b.bg:SetColorTexture(1,.8,.4,key==style and .17 or .04) end
+    for key,b in pairs(styleButtons) do Style.Select(b,key==style) end
     if recommendation then
-        explanation:SetText(GREY .. TB.styles[style] .. " · " .. (plain(recommendation.reason) or "") .. "|r")
+        explanation:SetText(TB.styles[style] .. " · " .. (plain(recommendation.reason) or ""))
         for i,row in ipairs(recommendation.rows) do
             local frame=rows[i]
-            local marker=row.match and GREEN..L["Passt"] or row.choice and AMBER..L["Ändern"] or GREY..L["Offen"]
+            local marker=row.match and GREEN..L["Passt"] or row.choice and GOLD..L["Ändern"] or GREY..L["Offen"]
             local rank=integer(row.choice and row.choice.rank)
             rank = rank and L[" · Rang "]..rank or ""
-            frame.name:SetText((row.match and GREEN or GOLD) .. (plain(row.name) or L["Unbekannt"]) .. rank .. "|r")
+            frame.name:SetText((plain(row.name) or L["Unbekannt"]) .. rank)
+            frame.name:SetTextColor(unpack(row.match and Color.success or Color.gold))
             local current=row.current and (plain(row.current.name) or L["Noch nicht erkannt"]) or L["Noch nicht erkannt"]
             local message
             if row.match then message=L["Passt bereits"]
             elseif row.choice then message=L["Aktuell: "]..current
             else message=(plain(snapshot.error) and L["Noch keine Live-Daten"]) or L["Nicht freigeschaltet oder nicht erkannt"] end
             frame.label:SetText(TB.labels[row.slot] .. "   " .. marker .. (row.fallback and L[" · Alternative"] or "") .. "|r")
-            frame.detail:SetText(GREY .. message .. "|r"); frame.option=row.choice or row.current
+            frame.detail:SetText(message); frame.option=row.choice or row.current
         end
         local text=plain(TB.status) or plain(snapshot.error)
         if not text then
@@ -153,7 +150,7 @@ function TB.Render()
         local members=GetNumGroupMembers and GetNumGroupMembers()
         if integer(members) and members>=5 then text=L["Volle Fünfergruppe: Valeera begleitet dich hier nicht."]
         elseif IsInGroup and IsInGroup() then text=L["Gruppenlauf: Empfehlung ist für solo gedacht. Rollen mit deiner Gruppe abstimmen."] end
-        status:SetText(GREY..(plain(text) or "").."|r")
+        status:SetText(plain(text) or "")
     end
     TB.CombatUI()
 end
