@@ -1,3 +1,5 @@
-# v1.1.1
+# v1.1.2
 
-- Remove the logo from the character overview and align the title and subtitle with the tabs.
+- Reduce repeated profession formatting when sorting the character overview.
+- Inset the left edge of the damage and healing bars while keeping the right edge in place.
+- Add Wago project metadata and strengthen release package validation.

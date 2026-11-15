@@ -163,6 +163,43 @@ assert(characters.rows[13]:IsShown() and characters.rows[13].cells[1].text=='Ruf
 characters.tab1.scripts.OnClick();assert(characters.headers[1].text.text=='Realm' and characters.scroll.offset==0
     and characters.height==630 and not characters.rows[13]:IsShown())
 print('PASS: character layout, localization, row cap, filtering, empty state, sorting and tabs')
+do
+ local db=Buddy.db.characters
+ local savedChars,savedSort,savedFilters=db.chars,db.sort,db.filters
+ db.chars={};db.filters={};db.sort={key='prof1',asc=true}
+ for i=1,70 do
+  db.chars[i]={name=string.format('Alt%02d',i),realm='Realm',class='HUNTER',
+   prof1_name='Alchemy',prof1_lvl=71-i}
+ end
+ local originalFormat,formats=string.format,0
+ string.format=function(pattern,...)
+  if pattern=='%s %d' then formats=formats+1 end
+  return originalFormat(pattern,...)
+ end
+ characters.Render()
+ string.format=originalFormat
+ assert(formats==82,'70 sort keys plus 12 displayed professions; got '..formats)
+ assert(characters.rows[1].cells[2].text=='Alt70','profession sort order changed')
+ db.chars[1].prof1_name='Aardvark'
+ characters.Render()
+ assert(characters.rows[1].cells[2].text=='Alt01','profession edits must appear on the next render')
+ db.sort={key='level',asc=false}
+ db.chars={
+  {name='Zed',realm='B',class='HUNTER',level=5},
+  {name='Amy',realm='A',class='HUNTER',level='5'},
+  {name='Bob',realm='A',class='HUNTER',level=5},
+  {name='Missing',realm='A',class='HUNTER'},
+ }
+ characters.Render()
+ for i,name in ipairs({'Amy','Bob','Zed','Missing'}) do
+  assert(characters.rows[i].cells[2].text==name,'numeric sort/tie-break changed')
+ end
+ db.chars[4].level=6;characters.Render()
+ assert(characters.rows[1].cells[2].text=='Missing','numeric edits must not use stale keys')
+ db.chars,db.sort,db.filters=savedChars,savedSort,savedFilters
+ characters.Render()
+ print('PASS: fresh sort keys, tie-breaks and 70-character profession formatting: '..formats)
+end
 SlashCmdList.AZEROTHBUDDYOMNIUM('')
 assert(AzerothBuddyOmniumFrame:IsShown())
 assert(#Buddy.Omnium.roleButtons==3 and not Buddy.Omnium.stat and not Buddy.Omnium.auto,'three role choices, no stat submenu')

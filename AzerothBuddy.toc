@@ -3,8 +3,9 @@
 ## Notes: Characters, Valeera advisor and Omnium Tome in one addon.
 ## Notes-deDE: Charaktere, Valeera-Berater und Omniumfoliant in einem Addon.
 ## Author: norushflow
-## Version: 1.1.1
+## Version: 1.1.2
 ## X-Curse-Project-ID: 1791270
+## X-Wago-ID: kNMPpOGz
 ## IconTexture: Interface\AddOns\AzerothBuddy\Media\BuddyIcon
 ## SavedVariables: AzerothBuddyDB
 ## SavedVariablesPerCharacter: AzerothBuddyCharDB

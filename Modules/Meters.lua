@@ -106,7 +106,7 @@ function M.Create()
         w.rows={};w.offset=0
         for i=1,ROWS do
             local row=CreateFrame("StatusBar",nil,w)
-            row:SetSize(248,30);row:SetPoint("TOPLEFT",6,-headerHeight-2-(i-1)*31)
+            row:SetSize(244,30);row:SetPoint("TOPLEFT",10,-headerHeight-2-(i-1)*31)
             row:SetStatusBarTexture(Style.WHITE)
             local background=row:CreateTexture(nil,"BACKGROUND")
             background:SetAllPoints(row);background:SetColorTexture(unpack(Color.inset))

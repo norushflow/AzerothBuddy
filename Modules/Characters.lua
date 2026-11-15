@@ -288,29 +288,23 @@ end
 local s = GetSortState()
 local sortKey = s.key
 local asc = s.asc
+local isNum = (sortKey == "level" or sortKey == "ilvl" or sortKey == "restxp_pct" or sortKey == "playtime_sec")
+-- Fresh keys for this sort only: profession formatting and secret-value guards
+-- run once per character, without retaining snapshots across UI updates.
+local values = {}
+for _, c in ipairs(t) do
+local value = GetCellValueForSort(c, sortKey)
+values[c] = isNum and SafeNum(value) or tostring(SafeStr(value))
+end
 
 table.sort(t, function(a, b)
-local av = GetCellValueForSort(a, sortKey)
-local bv = GetCellValueForSort(b, sortKey)
-
-local isNum = (sortKey == "level" or sortKey == "ilvl" or sortKey == "restxp_pct" or sortKey == "playtime_sec")
-if isNum then
-av, bv = SafeNum(av), SafeNum(bv)
+local av, bv = values[a], values[b]
 if av == bv then
 local ar, br = a.realm or "", b.realm or ""
 if ar == br then return (a.name or "") < (b.name or "") end
 return ar < br
 end
 if asc then return av < bv else return av > bv end
-else
-av, bv = tostring(SafeStr(av)), tostring(SafeStr(bv))
-if av == bv then
-local ar, br = a.realm or "", b.realm or ""
-if ar == br then return (a.name or "") < (b.name or "") end
-return ar < br
-end
-if asc then return av < bv else return av > bv end
-end
 end)
 
 return t
