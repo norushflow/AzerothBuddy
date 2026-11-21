@@ -1,5 +1,4 @@
-# v1.1.2
+# v1.1.3
 
-- Reduce repeated profession formatting when sorting the character overview.
-- Inset the left edge of the damage and healing bars while keeping the right edge in place.
-- Add Wago project metadata and strengthen release package validation.
+- Middle-click the minimap button to show or hide the damage and healing meters.
+- Make totals larger and gold, with smaller per-second values below. Abbreviate large numbers when the client permits formatting.

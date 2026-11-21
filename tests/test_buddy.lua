@@ -268,7 +268,7 @@ GameTooltip.Hide=function() error('Blizzard tooltip touched') end
 GameTooltip.SetOwner=function() error('Blizzard tooltip touched') end
 minimapButton.scripts.OnEnter(minimapButton)
 local tooltip=AzerothBuddyDesignTooltip
-assert(tooltip:IsShown() and tooltip:GetOwner()==minimapButton and #tooltip.lines==4)
+assert(tooltip:IsShown() and tooltip:GetOwner()==minimapButton and #tooltip.lines==5)
 Buddy.Style.HideTooltip(characters)
 assert(tooltip:IsShown(),'unrelated frame closed the tooltip')
 minimapButton.scripts.OnLeave(minimapButton)

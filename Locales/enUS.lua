@@ -170,6 +170,7 @@ addon.L = {
     ["Passt bereits"] = "Already matches",
     ["Position gesperrt."] = "Position locked.",
     ["Rechtsklick: Charaktere"] = "Right-click: characters",
+    ["Mittelklick: Schaden und Heilung umschalten"] = "Middle-click: toggle damage and healing meters",
     ["Restenergie"] = "Residual Energy",
     ["Rolle noch nicht erkannt"] = "Role not detected yet",
     ["Rolle wählen: verfügbare Runen werden übernommen. Gesperrte Runen bleiben offen."] = "Choose a role: available runes will be applied. Locked runes remain pending.",
