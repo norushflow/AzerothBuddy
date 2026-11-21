@@ -11,7 +11,7 @@ Eine gemeinsame Zentrale für Charaktere, Tiefenbegleiter, Omnium-Runen, Dungeon
 - Charakterübersicht und eigener verschiebbarer Minimap-Kompass.
 - Valeera-Beratung mit Rollen-, Gift- und Kuriositätenauswahl.
 - Omnium-Vorlagen für Tank, Heiler und Schaden.
-- Dungeon-Transmog, Schadens-/Heilungsanzeige und Leistenvorlagen je Klasse und Spezialisierung.
+- Dungeon-Transmog, Schadens-/Heilungsanzeige und Vorlagen für die Aktionsleisten 1–10 mit Charaktermakros je Klasse und Spezialisierung.
 
 ## Sprachen und aktueller Stand
 
