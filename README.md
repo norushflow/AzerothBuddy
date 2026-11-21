@@ -6,6 +6,14 @@ Eine gemeinsame Zentrale für Charaktere, Tiefenbegleiter, Omnium-Runen, Dungeon
 
 **Client:** WoW Retail / Midnight · **Interface:** 120105 · **Eigenständig:** keine zusätzlichen Addons erforderlich.
 
+[Wago](https://addons.wago.io/addons/azerothbuddy) · [CurseForge](https://www.curseforge.com/wow/addons/azerothbuddy) · [GitHub Releases](https://github.com/norushflow/AzerothBuddy/releases)
+
+## Einblicke
+
+[![Charakterübersicht mit Berufs- und Klassenfiltern](branding/screenshots/characters.webp)](branding/screenshots/characters.webp)
+
+[Valeera-Berater mit Empfehlungen für Heiler](branding/screenshots/valeera.webp) · [Omnium-Vorlage für Tanks](branding/screenshots/omnium.webp)
+
 ## Funktionen
 
 - Charakterübersicht und eigener verschiebbarer Minimap-Kompass.
